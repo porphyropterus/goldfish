@@ -1,6 +1,7 @@
 #pragma once
 #include "types.h"
 #include "lib/RP/RPGlfDefine.h"
+#include <string>
 
 enum RPGolGamemode
 {
@@ -27,12 +28,16 @@ struct DifficultyInfo
 	u32 minWind, maxWind;
 };
 
+const u32 CALC_BEFORE_WIND = 9;
 const DifficultyInfo diff_Beginner = { 0, 2, 0, 5 };
 const DifficultyInfo diff_Intermediate = { 3, 5, 5, 10 };
 const DifficultyInfo diff_Expert = { 6, 8, 10, 16 };
 const DifficultyInfo diff_Ninehole = { 0, 8, 0, 15 };
-
-const u32 CALC_BEFORE_WIND = 8;
-
 void makeWindSet(const DifficultyInfo&);
-void makeRandArrayU32(u32, u32*);
+
+const u32 WIND_DIR_ARRAY_SIZE = 8;
+const u32 WIND_SPD_ARRAY_SIZE = 16;
+
+const std::string windDirStrings[] = {
+	"S", "SE", "E", "NE", "N", "NW", "W", "SW"
+};

@@ -1,4 +1,5 @@
 #include "GolfWind.h"
+#include <cstdio>
 #include "lib/RP/RPUtlRandom.h"
 
 void makeWindSet(const DifficultyInfo& diff)
@@ -9,10 +10,14 @@ void makeWindSet(const DifficultyInfo& diff)
 		RPUtlRandom::calc();
 	}
 
+	printf("Making wind dirs...\n");
 
-}
+	u32 *windDirs = new u32[WIND_DIR_ARRAY_SIZE];
+	//makeRandArrayU32(WIND_DIR_ARRAY_SIZE, windDirs, RPGlfDefine::MAX_WIND_DIV);
 
-void makeRandArrayU32(u32 length, u32 *pArray)
-{
-
+	//std::printf("Wind dirs:\n");
+	//for (int i = 0; i < WIND_DIR_ARRAY_SIZE; i++)
+	//{
+	//	std::printf("%#.4x, ", windDirs[i]);
+	//}
 }

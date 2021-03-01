@@ -18,5 +18,24 @@ namespace RPGlfDefine
 
     const u32 HOLE_SIZE = 9;
     const u32 PLAYER_SIZE = 4;
-    const u32 WIND_SPEED_SIZE = 15; // m/s
+    const u32 MAX_WIND_SPD = 15; // m/s
+
+	enum RPGolGamemode
+	{
+		/* 0x0000 */ GOL_COURSE_SELECT,
+
+		/* 0x0001 */ GOL_TR_ONEPAT,
+		/* 0x0002 */ GOL_TR_NEARPIN,
+		/* 0x0003 */ GOL_TR_TARGET,
+
+		/* 0x0004 */ GOL_FT_ONEPAT,
+		/* 0x0005 */ GOL_FT_NEARPIN,
+		/* 0x0006 */ GOL_FT_TARGET,
+
+		/* 0x0007 */ GOL_NINEHOLE,
+
+		/* 0x0008 */ GOL_3H_BEGINNER,
+		/* 0x0009 */ GOL_3H_INTERMED,
+		/* 0x000A */ GOL_3H_EXPERT,
+	};
 }
