@@ -19,13 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GolfWind.cpp" />
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
+    <ClCompile Include="src\lib\RP\RPGlfConfig.cpp" />
     <ClCompile Include="src\lib\rvl\OSTime.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GolfWind.h" />
+    <ClInclude Include="src\lib\PPC.H" />
+    <ClInclude Include="src\lib\RP\RPGlfConfig.h" />
     <ClInclude Include="src\lib\RP\RPGlfDefine.h" />
     <ClInclude Include="src\lib\RP\RPUtlRandom.h" />
     <ClInclude Include="src\lib\rvl\OSTime.h" />

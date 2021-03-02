@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include "types.h"
-#include "lib/RP/RPUtlRandom.h"
-#include "lib/rvl/OSTime.h"
-#include "GolfWind.h"
+#include <lib/RP/RPUtlRandom.h>
+#include <lib/RP/RPGlfConfig.h>
+#include <lib/rvl/OSTime.h>
 
 int main()
 {
@@ -20,7 +20,10 @@ int main()
 
 	RPUtlRandom::setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 
-	makeWindSet(diff_Ninehole);
+	// RPGlfConfig::makeWindSet(diff_Ninehole, NULL, NULL);
+
+	u32 arrayTest1[8];
+	RPGlfConfig::makeRandArray(8, arrayTest1);
 
 	return 0;
 }

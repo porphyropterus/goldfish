@@ -1,9 +1,6 @@
 #include "types.h"
 #include "lib/rvl/OSTime.h"
 
-#define INSTANCE_GUARD(x) \
-	if (!mInstance) { mInstance = new x(); }
-
 class RPUtlRandom
 {
 public:

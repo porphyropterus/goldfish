@@ -28,7 +28,7 @@ u32 RPUtlRandom::calc()
 	RPUtlRandom* instance = getInstance();
 
 	// Evaluate 64 bits and save lower 32 to replicate
-	// 750 overflow arithmetic
+	// multiply low overflow arithmetic
 	u64 seed = instance->mSeed * SEED_STEP + 1;
 	instance->mSeed = (u32)seed;
 
@@ -43,7 +43,7 @@ u32 RPUtlRandom::getU32()
 
 f32 RPUtlRandom::getF32()
 {
-	return (float)getU32() / 0xFFFF + 1;
+	return (float)getU32() / 0x10000;
 }
 
 RPUtlRandom* RPUtlRandom::getInstance()

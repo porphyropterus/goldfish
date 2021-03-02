@@ -8,10 +8,11 @@ struct DifficultyInfo;
 struct RPGlfConfig
 {
 	static void makeRandomWind();
+	static void makeRandArray(s32, u32*);
 	static void makeWindSet(const DifficultyInfo&, const u32*, const u32*);
 
-	static u32 mWindDirections[RPGlfDefine::MAX_WIND_DIV];
-	static u32 mWindSpeeds[RPGlfDefine::MAX_WIND_SPD];
+	static u32 mWindDirections[RPGlfDefine::HOLE_SIZE];
+	static u32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];
 };
 
 struct DifficultyInfo
@@ -20,6 +21,7 @@ struct DifficultyInfo
 	u32 minWind, maxWind;
 };
 
+const u32 S32_MAX = 0x7FFFFFFF;
 const u32 CALC_BEFORE_WIND = 9;
 const DifficultyInfo diff_Beginner = { 0, 2, 0, 5 };
 const DifficultyInfo diff_Intermediate = { 3, 5, 5, 10 };

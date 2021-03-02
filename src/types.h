@@ -13,3 +13,6 @@ typedef uint64_t        u64;
 
 typedef float           f32;
 typedef double          f64;
+
+#define INSTANCE_GUARD(x) \
+	if (!mInstance) { mInstance = new x(); }
