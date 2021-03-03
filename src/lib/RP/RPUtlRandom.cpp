@@ -11,11 +11,11 @@ void RPUtlRandom::initialize(u64 rtc)
 {
 	// Convert RTC time to calendar time
 	assert(false); // OSTicksToCalendarTime is not implemented yet
-	OSCalendarTime ctime;
-	OSTicksToCalendarTime(rtc, &ctime);
+	//OSCalendarTime ctime;
+	//OSTicksToCalendarTime(rtc, &ctime);
 
 	// Manipulate ctime data to make up seed
-	setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
+	//setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 }
 
 /// <summary>

@@ -21,9 +21,6 @@
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\rvl\OSTime.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\lib\RP\RPGlfConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

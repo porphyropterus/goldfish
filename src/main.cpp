@@ -4,19 +4,48 @@
 #include <lib/RP/RPGlfConfig.h>
 #include <lib/rvl/OSTime.h>
 
-/////////////////////
+///////////////////////
 #define DEBUG      //
-#define __DO_TESTS //
-/////////////////////
+//#define __DO_TESTS //
+//#define __CTIME    //
+///////////////////////
 
 int main()
 {
 	OSCalendarTime ctime;
 
+#ifdef __CTIME
+	// 04:20
+	ctime.sec = 20;
+	ctime.min = 04;
+
+	ctime.hour = NULL;
+	ctime.mday = NULL;
+	ctime.mon = NULL;
+	ctime.year = NULL;
+	ctime.wday = NULL;
+	ctime.yday = NULL;
+
+	ctime.msec = DOLPHIN_MSEC;
+	ctime.usec = DOLPHIN_USEC;
+#endif
+
 #ifdef DEBUG
-	RPUtlRandom::setSeed(0x04094C6F);
+	RPUtlRandom::setSeed(0x11494C6F);
+	RPGlfConfig::chooseWindSet(diff_Ninehole);
+
+	u32* pWindDirs = RPGlfConfig::getWindDirs();
+	s32* pWindSpeeds = RPGlfConfig::getWindSpeeds();
+
+	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+	{
+		printf("Hole %d: {%dm/s, %s}\n", i, pWindSpeeds[i], windDirStrings[pWindDirs[i]].c_str());
+	}
+
 #else
+#ifdef __CTIME
 	RPUtlRandom::setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
+#endif
 #endif
 
 	// RPGlfConfig::makeWindSet(diff_Ninehole, NULL, NULL);

@@ -19,9 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
     <ClCompile Include="src\lib\RP\RPGlfConfig.cpp" />
-    <ClCompile Include="src\lib\rvl\OSTime.cpp" />
+    <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -42,6 +42,9 @@ struct OSCalendarTime
     /* 0x24 */ s32 usec;
 }; /* sizeof = 0x28 (40u)*/
 
+#define DOLPHIN_MSEC 595
+#define DOLPHIN_USEC 111
+
 u64 OSGetTime();
 void OSTicksToCalendarTime(u64 ticks, OSCalendarTime* time);
 

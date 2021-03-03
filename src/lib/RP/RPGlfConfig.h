@@ -11,10 +11,13 @@ public:
 	static void makeRandomSequence(s32, s32*);        // at 8029dea8
 	static void chooseWindSet(const DifficultyInfo&); // at 8029dcf4
 
+	static u32* getWindDirs();
+	static s32* getWindSpeeds();
+
 private:
 	inline RPGlfConfig() : mWindDirs(), mWindSpeeds() {}
 	u32 mWindDirs[RPGlfDefine::HOLE_SIZE];
-	u32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];
+	s32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];
 
 	static RPGlfConfig* mInstance;
 	static RPGlfConfig* getInstance();
