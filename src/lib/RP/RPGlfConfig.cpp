@@ -12,12 +12,12 @@
 /// <param name="pArray">Pointer to array to fill</param>
 void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 {
-	for (u32 i = 0; i < max; i++)
+	for (s32 i = 0; i < max; i++)
 	{
 		pArray[i] = -max;
 	}
 
-	u32 slotsFilled = 0;
+	s32 slotsFilled = 0;
 	while (true)
 	{
 		s32 random = (s32)(RPUtlRandom::getF32() * (max - slotsFilled));
