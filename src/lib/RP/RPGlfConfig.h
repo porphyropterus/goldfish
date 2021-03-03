@@ -4,6 +4,11 @@
 #include <string>
 
 struct DifficultyInfo;
+struct Wind
+{
+	u32 mDirection;
+	s32 mSpeed;
+};
 
 class RPGlfConfig
 {
@@ -11,13 +16,14 @@ public:
 	static void makeRandomSequence(s32, s32*);        // at 8029dea8
 	static void chooseWindSet(const DifficultyInfo&); // at 8029dcf4
 
-	static u32* getWindDirs();
-	static s32* getWindSpeeds();
+	static Wind* getWinds();
 
 private:
-	inline RPGlfConfig() : mWindDirs(), mWindSpeeds() {}
-	u32 mWindDirs[RPGlfDefine::HOLE_SIZE];
-	s32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];
+	inline RPGlfConfig() : mWinds() {}
+	Wind mWinds[RPGlfDefine::HOLE_SIZE];
+
+	//u32 mWindDirs[RPGlfDefine::HOLE_SIZE];            // at 804a8b54
+	//s32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];          // at 804a8b78
 
 	static RPGlfConfig* mInstance;
 	static RPGlfConfig* getInstance();
@@ -34,7 +40,7 @@ const u32 randomSpeedArraySize = 16;
 const u32 randomDirArraySize = 8;
 
 // Number of RNG calls before makeWindSet.
-// Ex: seed must be updated 9 times between its instantiation
+// Ex: seed must be advanced 9 times between its instantiation
 // and makeWindSet being called to be accurate
 const u32 CALC_BEFORE_WIND = 9;
 

@@ -33,8 +33,13 @@ void RPUtlRandom::initialize(const OSCalendarTime& ctime)
 /// <param name="seed">Specified seed</param>
 void RPUtlRandom::setSeed(u32 seed)
 {
-	std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
+	//std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
 	getInstance()->mSeed = seed;
+}
+
+u32 RPUtlRandom::getSeed()
+{
+	return getInstance()->mSeed;
 }
 
 /// <summary>

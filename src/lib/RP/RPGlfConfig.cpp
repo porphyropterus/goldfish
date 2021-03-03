@@ -81,8 +81,8 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 		if ((i < diff.startHole) || (i > diff.endHole))
 		{
 			// If it won't, use dummy wind (32 S)
-			instance->mWindDirs[i] = RPGlfDefine::MAX_WIND_DIV;
-			instance->mWindSpeeds[i] = RPGlfDefine::MAX_WIND_SPD;
+			instance->mWinds[i].mDirection = RPGlfDefine::MAX_WIND_DIV;
+			instance->mWinds[i].mSpeed = RPGlfDefine::MAX_WIND_SPD;
 		}
 		else
 		{
@@ -94,13 +94,14 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 			} while ((nextSpd < diff.minWind) && (nextSpd > diff.maxWind));
 
 			// It is valid, so let's use it
-			instance->mWindSpeeds[i] = nextSpd;
+			instance->mWinds[i].mSpeed = nextSpd;
 
 			if (numNonzeroWinds < 8)
 			{
 				s32 nextDir = randomDirs[r27_i];
+				instance->mWinds[i].mDirection = nextDir;
 				// TO-DO: Verify this continue jumps to for loop top
-				if (nextSpd == 0) continue;
+				if (nextSpd <= 0) continue;
 				numNonzeroWinds++;
 				r27_i++;
 			}
@@ -109,9 +110,9 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 			else
 			{
 				// If the next wind speed was going to be zero, we take it
-				if (randomSpeeds[r20] == 0)
+				if (nextSpd == 0)
 				{
-					instance->mWindDirs[i] = RPGlfDefine::SOUTH;
+					instance->mWinds[i].mDirection = RPGlfDefine::SOUTH;
 					// TO-DO: Verify this jumps to the top of the for loop.
 					continue;
 				}
@@ -119,9 +120,9 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 				else
 				{
 					u32 rndNum = (u32)(RPUtlRandom::getF32() * gameLength) + diff.startHole;
-					instance->mWindSpeeds[rndNum] = 0;
+					instance->mWinds[rndNum].mSpeed = 0;
 					// This can't be right.
-					instance->mWindDirs[i] = instance->mWindDirs[rndNum];
+					instance->mWinds[i].mDirection = instance->mWinds[rndNum].mDirection;
 				}
 			}
 		}
@@ -129,21 +130,12 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 }
 
 /// <summary>
-/// Gets a pointer to the RPGlfConfig member array for wind directions.
+/// Gets a pointer to the RPGlfConfig member array for winds.
 /// </summary>
-/// <returns>Wind direction array pointer</returns>
-u32* RPGlfConfig::getWindDirs()
+/// <returns>Wind array pointer</returns>
+Wind* RPGlfConfig::getWinds()
 {
-	return getInstance()->mWindDirs;
-}
-
-/// <summary>
-/// Gets a pointer to the RPGlfConfig member array for wind speeds.
-/// </summary>
-/// <returns>Wind speed array pointer</returns>
-s32* RPGlfConfig::getWindSpeeds()
-{
-	return getInstance()->mWindSpeeds;
+	return getInstance()->mWinds;
 }
 
 /// <summary>

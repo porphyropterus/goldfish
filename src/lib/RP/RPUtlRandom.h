@@ -12,6 +12,7 @@ public:
 	static void initialize(const OSCalendarTime&);
 
 	static void setSeed(u32);
+	static u32 getSeed();
 	static u32 calc();   // inlined
 	static void advance(u32);
 	

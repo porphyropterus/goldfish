@@ -22,14 +22,15 @@
     <ClCompile Include="src\lib\RP\RPGlfConfig.cpp" />
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\WindArgParser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\lib\PPC.H" />
     <ClInclude Include="src\lib\RP\RPGlfConfig.h" />
     <ClInclude Include="src\lib\RP\RPGlfDefine.h" />
     <ClInclude Include="src\lib\RP\RPUtlRandom.h" />
     <ClInclude Include="src\lib\rvl\OSTime.h" />
     <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\WindArgParser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -5,19 +5,81 @@
 #include <lib/rvl/OSTime.h>
 
 ///////////////////////
-#define DEBUG      //
-//define __DO_TESTS //
+//#define DEBUG      //
+//#define __DO_TESTS //
 //#define __CTIME    //
+#define __WIND_GEN //
 ///////////////////////
 
-int main()
+int main(u32 argc, char** argv)
 {
 	OSCalendarTime ctime;
+	ctime.hour = NULL;
+	ctime.mday = NULL;
+	ctime.mon = NULL;
+	ctime.year = NULL;
+	ctime.wday = NULL;
+	ctime.yday = NULL;
 
+	// Dolphin only supports RTC up to the precision of seconds.
+	// As a result, the millisecond and microsecond fields
+	// of the calendar time will always have the same arbitrary values.
+	ctime.msec = DOLPHIN_MSEC;
+	ctime.usec = DOLPHIN_USEC;
+
+#ifdef __WIND_GEN
+	u32 correctDirs[] = {
+		0x0002, 0x0003, 0x0007, 0x0004, 0x0000, 0x0001, 0x0006, 0x0005, 0x0000
+	};
+	s32 correctSpeeds[] = {
+		0, 1, 2, 3, 4, 5, 6, 7, 8
+	};
+
+	for (u32 i = 0; i < 0xFFFFFFFF; i++)
+	{
+		//RPUtlRandom::setSeed(0x11494C6F);
+		RPUtlRandom::setSeed(i);
+		RPGlfConfig::chooseWindSet(diff_Ninehole);
+
+		Wind* pWinds = RPGlfConfig::getWinds();
+
+		bool speed_correct = true, dir_correct = true;
+
+		// std::printf("Testing wind speeds...\n");
+		for (int i = 0; i < RPGlfDefine::HOLE_SIZE - 1; i++)
+		{
+			if (pWinds[i].mSpeed != correctSpeeds[i])
+			{
+				speed_correct = false;
+				break;
+				// printf("[ERROR] Expected %#.4x at pWindSpeeds[%d], got %#.4x.\n", correctSpeeds[i], i, pWinds[i].mSpeed);
+			}
+		}
+		if (speed_correct)
+		{
+			printf("OK (%#.8x)\n", i);
+		}
+	}
+
+	//std::printf("\nTesting wind directions...\n");
+	//for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+	//{
+	//	if (pWinds[i].mDirection != correctDirs[i])
+	//	{
+	//		dir_correct = false;
+	//		printf("[ERROR] Expected %s at pWindDirs[%d], got %s.\n", windDirStrings[correctDirs[i]].c_str(), i, windDirStrings[pWinds[i].mDirection].c_str());
+	//	}
+	//}
+	//if (dir_correct)
+	//{
+	//	printf("OK\n");
+	//}
+
+#endif
 #ifdef __CTIME
 	// 04:20
-	ctime.sec = 20;
-	ctime.min = 04;
+	ctime.sec = 32;
+	ctime.min = 02;
 
 	ctime.hour = NULL;
 	ctime.mday = NULL;
@@ -26,20 +88,69 @@ int main()
 	ctime.wday = NULL;
 	ctime.yday = NULL;
 
+	// Dolphin only supports RTC up to the precision of seconds.
+	// As a result, the millisecond and microsecond fields
+	// of the calendar time will always have the same arbitrary values.
 	ctime.msec = DOLPHIN_MSEC;
 	ctime.usec = DOLPHIN_USEC;
+
+	RPUtlRandom::initialize(ctime);
+	RPGlfConfig::chooseWindSet(diff_Ninehole);
+
+	s32* pSpeeds = RPGlfConfig::getWindSpeeds();
+	u32* pDirs = RPGlfConfig::getWindDirs();
+
+	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+	{
+		std::printf("Hole %d: {%dmph, %s}\n", (i + 1), (pSpeeds[i] * 2), windDirStrings[pDirs[i]].c_str());
+	}
+
+	while (true);
+
 #endif
 
 #ifdef DEBUG
+	u32 correctDirs[] = {
+		0x0002, 0x0003, 0x0007, 0x0004, 0x0000, 0x0001, 0x0006, 0x0005, 0x0000
+	};
+	s32 correctSpeeds[] = {
+		0x000F, 0x0004, 0x0003, 0x000A, 0x000C, 0x0008, 0x000B, 0x0006, 0x0000
+	};
+
 	RPUtlRandom::setSeed(0x11494C6F);
+	//RPUtlRandom::setSeed(0x01f78a40);
 	RPGlfConfig::chooseWindSet(diff_Ninehole);
 
-	u32* pWindDirs = RPGlfConfig::getWindDirs();
-	s32* pWindSpeeds = RPGlfConfig::getWindSpeeds();
+	Wind* pWinds = RPGlfConfig::getWinds();
 
-	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+	bool speed_correct = true, dir_correct = true;
+
+	std::printf("Testing wind speeds...\n");
+	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
 	{
-		printf("Hole %d: {%dm/s, %s}\n", i, pWindSpeeds[i], windDirStrings[pWindDirs[i]].c_str());
+		if (pWinds[i].mSpeed != correctSpeeds[i])
+		{
+			speed_correct = false;
+			printf("[ERROR] Expected %#.4x at pWindSpeeds[%d], got %#.4x.\n", correctSpeeds[i], i, pWinds[i].mSpeed);
+		}
+}
+	if (speed_correct)
+	{
+		printf("OK\n");
+	}
+
+	std::printf("\nTesting wind directions...\n");
+	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+	{
+		if (pWinds[i].mDirection != correctDirs[i])
+		{
+			dir_correct = false;
+			printf("[ERROR] Expected %s at pWindDirs[%d], got %s.\n", windDirStrings[correctDirs[i]].c_str(), i, windDirStrings[pWinds[i].mDirection].c_str());
+		}
+	}
+	if (dir_correct)
+	{
+		printf("OK\n");
 	}
 
 #else
@@ -83,7 +194,7 @@ int main()
 		printf("OK\n");
 	}
 
-	std::printf("\nTesting array 2...\n");
+	std::printf("\n\nTesting array 2...\n");
 	for (int i = 0; i < 16; i++)
 	{
 		if (arrayTest2[i] != correctArray2[i])
