@@ -1,5 +1,4 @@
 #include "RPGlfConfig.h"
-#include <lib/PPC.H>
 #include <lib/RP/RPUtlRandom.h>
 #include <lib/RP/RPGlfDefine.h>
 #include <cstdio>
@@ -77,7 +76,7 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 	// Loop through each hole
 	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
 	{
-		// Will the i'th hole NOT be played
+		// Will the [i]'th hole NOT be played
 		// with the current difficulty?
 		if ((i < diff.startHole) || (i > diff.endHole))
 		{
@@ -97,7 +96,6 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 			// It is valid, so let's use it
 			instance->mWindSpeeds[i] = nextSpd;
 
-			// 
 			if (numNonzeroWinds < 8)
 			{
 				s32 nextDir = randomDirs[r27_i];

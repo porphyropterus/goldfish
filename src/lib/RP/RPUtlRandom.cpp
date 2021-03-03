@@ -57,7 +57,7 @@ u32 RPUtlRandom::calc()
 /// <param name="n">Number of steps to advance</param>
 void RPUtlRandom::advance(u32 n)
 {
-	for (int i = 0; i < n; i++)
+	for (u32 i = 0; i < n; i++)
 	{
 		calc();
 	}

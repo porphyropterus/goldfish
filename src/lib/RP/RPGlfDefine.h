@@ -16,9 +16,13 @@ namespace RPGlfDefine
         /* 0x0008 */ MAX_WIND_DIV
 	};
 
+	enum WindSpd
+	{
+		/* 0x000F */ MAX_WIND_SPD = 15
+	};
+
     const u32 HOLE_SIZE = 9;
     const u32 PLAYER_SIZE = 4;
-    const u32 MAX_WIND_SPD = 15; // m/s
 
 	enum RPGolGamemode
 	{

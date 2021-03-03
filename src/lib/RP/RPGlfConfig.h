@@ -26,7 +26,7 @@ private:
 struct DifficultyInfo
 {
 	u32 startHole, endHole;
-	u32 minWind, maxWind;
+	s32 minWind, maxWind;
 };
 
 // Array sizes for makeRandomSequence

@@ -5,8 +5,8 @@
 #include <lib/rvl/OSTime.h>
 
 ///////////////////////
-//#define DEBUG      //
-#define __DO_TESTS //
+#define DEBUG      //
+//define __DO_TESTS //
 //#define __CTIME    //
 ///////////////////////
 
