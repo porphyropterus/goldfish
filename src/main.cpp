@@ -12,28 +12,23 @@
 int main()
 {
 	OSCalendarTime ctime;
-	ctime.sec = 0;
-	ctime.min = 1;
-	ctime.hour = 6;
-	ctime.mday = 3;
-	ctime.mon = 4;
-	ctime.year = 2020;
-	ctime.wday = 0;
-	ctime.yday = 123;
-	ctime.msec = 595;
-	ctime.usec = 111;
 
 #ifdef DEBUG
-	RPUtlRandom::setSeed(0x784B16BC);
+	RPUtlRandom::setSeed(0x04094C6F);
 #else
 	RPUtlRandom::setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 #endif
 
 	// RPGlfConfig::makeWindSet(diff_Ninehole, NULL, NULL);
 
+#ifdef __DO_TESTS
+	// Simulate all random number generations before wind is generated
+	RPUtlRandom::advance(CALC_BEFORE_WIND);
+
+	// Generate random array of wind directions
 	s32 arrayTest1[8];
 	RPGlfConfig::makeRandomArray(8, arrayTest1);
-
+	// Generate random array of wind speeds
 	s32 arrayTest2[16];
 	RPGlfConfig::makeRandomArray(16, arrayTest2);
 
@@ -42,7 +37,6 @@ int main()
 	s32 correctArray2[16] = { 0x0008, 0x000F, 0x000E, 0x0003, 0x0004, 0x0002, 0x0005, 0x000A,
 			 0x0001, 0x0006, 0x0000, 0x0009, 0x000B, 0x0007, 0x000D, 0x000C };
 
-#ifdef __DO_TESTS
 	std::printf("Testing array 1...\n");
 	for (int i = 0; i < 8; i++)
 	{

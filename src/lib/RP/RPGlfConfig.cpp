@@ -3,76 +3,50 @@
 #include <lib/RP/RPUtlRandom.h>
 #include <cstdio>
 
-void RPGlfConfig::makeRandomWind()
+void RPGlfConfig::makeRandomArray(s32 len, s32* pArray)
 {
-	// Simulate all random number generations before wind is generated
-	RPUtlRandom::advance(CALC_BEFORE_WIND);
-
-	
-}
-
-// 8029dea8
-// I'd like to apologize in advance for the headache you are about to suffer
-// from reading this code
-void RPGlfConfig::makeRandomArray(s32 val, s32* pArray)
-{
-	s32* pArrayStart = &pArray[0];
-	s32* pArrayCopy = pArray;
-
 	u32 r0;
 
-	if ((val > 0) && (val < S32_MAX))
+	// Initialize array
+	for (u32 i = 0; i < len; i++)
 	{
-		for (u32 i = 0; i < val; i++)
-		{
-			pArray[i] = -val;
-		}
+		pArray[i] = -len;
 	}
 
-	u32 r31 = 0;
-	u32 r25 = 0;
-	u32 r26 = 0;
+	u32 it = 0;
 	while (true)
 	{
-	generateAgain:
-		u32 result = (u32)(RPUtlRandom::getF32() * (val - r26));
-		s32 signedResult = (s32)result;
+		s32 signedResult = (s32)(RPUtlRandom::getF32() * (len - it));
 
-		pArrayStart = &pArray[0];
+		s32 searchStart = 0;
 		u32 r5 = 0;
 
-		if (val > 0)
+		if (len > 0)
 		{
-			for (s32 i = 0; i < val; i++)
+			for (s32 i = 0; i < len; i++)
 			{
-				if ((*pArrayStart < 0) && (--signedResult < 0))
+				if ((pArray[searchStart] < 0) && (--signedResult < 0))
 				{
 					rlwinm(signedResult, r5, 2, 0x3FFFFFFF);
-					r26++;
 
-					r0 = pArrayCopy[signedResult / sizeof(s32)];
-					r0 += val;
-					pArrayCopy[signedResult / sizeof(s32)] = r0;
+					r0 = pArray[signedResult / sizeof(s32)];
+					r0 += len;
+					pArray[signedResult / sizeof(s32)] = r0;
 
-					r0 = pArrayCopy[r31];
+					r0 = pArray[it];
 					r0 += r5;
-					pArrayCopy[r31] = r0;
+					pArray[it] = r0;
 
-					r25++;
-					r31++;
-
-					if (r25 >= val)
+					if (++it >= len)
 					{
 						return;
 					}
-					else
-					{
-						goto generateAgain;
-					}
+					
+					break;
 				}
 				else
 				{
-					pArrayStart++;
+					searchStart++;
 					r5++;
 				}
 			}
@@ -80,11 +54,10 @@ void RPGlfConfig::makeRandomArray(s32 val, s32* pArray)
 	}
 }
 
-// 8029dcf4
-// Array ptrs should be data filled by makeRandWind
-// The final winds go in RPGlfConfig's member arrays
-void RPGlfConfig::makeWindSet(const DifficultyInfo& diff, const u32 *pRandDirs, const s32 *pRandSpeeds)
+void RPGlfConfig::makeWindSet(const DifficultyInfo& diff)
 {
-	u32 gameLength = diff.endHole - diff.startHole;
+	// Simulate all random number generations before wind is generated
+	RPUtlRandom::advance(CALC_BEFORE_WIND);
 
+	u32 gameLength = diff.endHole - diff.startHole;
 }
