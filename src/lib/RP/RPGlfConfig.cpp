@@ -18,29 +18,12 @@ void RPGlfConfig::makeRandomArray(s32 val, s32* pArray)
 {
 	s32* pArrayStart = &pArray[0];
 	s32* pArrayCopy = pArray;
-	s32* pArrayCopy2 = pArrayStart;
 
 	u32 r0;
 
 	if ((val > 0) && (val < S32_MAX))
 	{
-		if (val > 8)
-		{
-			for (u32 i = 0; i < (val - 1) / 8; i++)
-			{
-				pArray[0 + i] = -val;
-				pArray[1 + i] = -val;
-				pArray[2 + i] = -val;
-				pArray[3 + i] = -val;
-				pArray[4 + i] = -val;
-				pArray[5 + i] = -val;
-				pArray[6 + i] = -val;
-				pArray[7 + i] = -val;
-			}
-		}
-
-		r0 = val - (val - 1) / 8;
-		for (u32 i = 0; i < r0; i++)
+		for (u32 i = 0; i < val; i++)
 		{
 			pArray[i] = -val;
 		}
