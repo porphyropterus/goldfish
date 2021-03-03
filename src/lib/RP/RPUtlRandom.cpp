@@ -1,6 +1,7 @@
 #include <lib/rvl/OSTime.h>
 #include "RPUtlRandom.h"
 #include <cstdio>
+#include <cassert>
 
 /// <summary>
 /// Initialize seed using OS time in ticks (u64)
@@ -9,6 +10,7 @@
 void RPUtlRandom::initialize(u64 rtc)
 {
 	// Convert RTC time to calendar time
+	assert(false); // OSTicksToCalendarTime is not implemented yet
 	OSCalendarTime ctime;
 	OSTicksToCalendarTime(rtc, &ctime);
 
