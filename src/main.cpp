@@ -27,10 +27,10 @@ int main()
 
 	// Generate random array of wind directions
 	s32 arrayTest1[8];
-	RPGlfConfig::makeRandomArray(8, arrayTest1);
+	RPGlfConfig::makeRandomSequence(randomDirArraySize, arrayTest1);
 	// Generate random array of wind speeds
 	s32 arrayTest2[16];
-	RPGlfConfig::makeRandomArray(16, arrayTest2);
+	RPGlfConfig::makeRandomSequence(randomSpeedArraySize, arrayTest2);
 
 	bool correct = true, correct2 = true;
 	s32 correctArray1[8] = { 0x0001, 0x0002, 0x0003, 0x0006, 0x0005, 0x0007, 0x0004, 0x0000 };
