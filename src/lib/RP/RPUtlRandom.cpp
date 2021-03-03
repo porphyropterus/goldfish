@@ -19,7 +19,7 @@ void RPUtlRandom::initialize(const OSCalendarTime& ctime)
 
 void RPUtlRandom::setSeed(u32 seed)
 {
-	std::printf("[RPUtlRandom::setSeed] New seed %#.8x\n", seed);
+	std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
 	getInstance()->mSeed = seed;
 }
 
@@ -32,8 +32,16 @@ u32 RPUtlRandom::calc()
 	u64 seed = instance->mSeed * SEED_STEP + 1;
 	instance->mSeed = (u32)seed;
 
-	std::printf("[RPUtlRandom::calc] New seed -> %#.8x\n", instance->mSeed);
+	// std::printf("[RPUtlRandom::calc] New seed -> %#.8x\n", instance->mSeed);
 	return instance->mSeed;
+}
+
+void RPUtlRandom::advance(u32 n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		calc();
+	}
 }
 
 u32 RPUtlRandom::getU32()

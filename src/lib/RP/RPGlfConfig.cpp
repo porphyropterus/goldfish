@@ -6,126 +6,101 @@
 void RPGlfConfig::makeRandomWind()
 {
 	// Simulate all random number generations before wind is generated
-	for (int i = 0; i < CALC_BEFORE_WIND; i++)
-	{
-		RPUtlRandom::calc();
-	}
+	RPUtlRandom::advance(CALC_BEFORE_WIND);
 
 	
 }
 
 // 8029dea8
-void RPGlfConfig::makeRandArray(s32 val, u32* pArray)
+// I'd like to apologize in advance for the headache you are about to suffer
+// from reading this code
+void RPGlfConfig::makeRandomArray(s32 val, s32* pArray)
 {
-	u32* pArrayCopy = pArray;
+	s32* pArrayStart = &pArray[0];
+	s32* pArrayCopy = pArray;
+	s32* pArrayCopy2 = pArrayStart;
 
 	u32 r0;
-	s32 r8 = 0;
 
-	if (val > 0)
+	if ((val > 0) && (val < S32_MAX))
 	{
-		s32 r6 = val - 8;
-
-		//  ^ Yep...
 		if (val > 8)
 		{
-			// Yeah, I don't get this either
-			if ((val >= 0) && (val < S32_MAX))
+			for (u32 i = 0; i < (val - 1) / 8; i++)
 			{
-				s32 r0 = r6 + 7;
-				rlwinm(r0, r0, 0x1D, 0xFFFFFFF8);
-
-				s32 r7 = -val;
-
-				if (r6 > 0)
-				{
-					for (int i = 0; i < r0; i++)
-					{
-						pArray[0 * i] = r7;
-						pArray[1 * i] = r7;
-						pArray[2 * i] = r7;
-						pArray[3 * i] = r7;
-						pArray[4 * i] = r7;
-						pArray[5 * i] = r7;
-						pArray[6 * i] = r7;
-						pArray[7 * i] = r7;
-						pArray[8 * i] = r7;
-						r8 += 8;
-					}
-				}
+				pArray[0 + i] = -val;
+				pArray[1 + i] = -val;
+				pArray[2 + i] = -val;
+				pArray[3 + i] = -val;
+				pArray[4 + i] = -val;
+				pArray[5 + i] = -val;
+				pArray[6 + i] = -val;
+				pArray[7 + i] = -val;
 			}
 		}
 
-		s32 r5;
-		rlwinm(r5, r8, 2, 0x3FFFFFFF);
-
-		r0 = val - r8;
-		pArray += r5;
-		r5 = -val;
-
-		if (r8 < val)
+		r0 = val - (val - 1) / 8;
+		for (u32 i = 0; i < r0; i++)
 		{
-			for (s32 i = 0; i < r0; i++)
-			{
-				*pArray = r5;
-				pArray++;
-			}
+			pArray[i] = -val;
 		}
 	}
 
-
+	u32 r31 = 0;
+	u32 r25 = 0;
+	u32 r26 = 0;
 	while (true)
 	{
-		u32* r31 = pArrayCopy;
-		u32 r25 = 0;
-		u32 r26 = 0;
+	generateAgain:
+		u32 result = (u32)(RPUtlRandom::getF32() * (val - r26));
+		s32 signedResult = (s32)result;
 
-
-		if (r25 >= val)
-		{
-			return;
-		}
-
-		s32 result = (s32)(RPUtlRandom::getF32() * -val);
-
-		s32 r5 = 0;
+		pArrayStart = &pArray[0];
+		u32 r5 = 0;
 
 		if (val > 0)
 		{
 			for (s32 i = 0; i < val; i++)
 			{
-				if (pArray[0] < 0)
+				if ((*pArrayStart < 0) && (--signedResult < 0))
 				{
-					if (--val < 0)
+					rlwinm(signedResult, r5, 2, 0x3FFFFFFF);
+					r26++;
+
+					r0 = pArrayCopy[signedResult / sizeof(s32)];
+					r0 += val;
+					pArrayCopy[signedResult / sizeof(s32)] = r0;
+
+					r0 = pArrayCopy[r31];
+					r0 += r5;
+					pArrayCopy[r31] = r0;
+
+					r25++;
+					r31++;
+
+					if (r25 >= val)
 					{
-						rlwinm(val, r5, 2, 0x3FFFFFFF);
-						r26++;
-
-						r0 = pArrayCopy[val / sizeof(s32)];
-						r0 += val;
-						pArrayCopy[val / sizeof(s32)] = r0;
-
-						r0 = pArrayCopy[i];
-						r0 += r5;
-						pArrayCopy[i] = r0;
-
-						r25++;
-
-						if (r25 >= val)
-						{
-							return;
-						}
+						return;
 					}
+					else
+					{
+						goto generateAgain;
+					}
+				}
+				else
+				{
+					pArrayStart++;
+					r5++;
 				}
 			}
 		}
 	}
 }
 
-// 8029dcf4, but MakeRandArray calls are split into makeRandomWind + makeRandArray
-// Array ptrs should be data from makeRandomWind
+// 8029dcf4
+// Array ptrs should be data filled by makeRandWind
 // The final winds go in RPGlfConfig's member arrays
-void RPGlfConfig::makeWindSet(const DifficultyInfo& diff, const u32 *pRandDirs, const u32 *pRandSpeeds)
+void RPGlfConfig::makeWindSet(const DifficultyInfo& diff, const u32 *pRandDirs, const s32 *pRandSpeeds)
 {
 	u32 gameLength = diff.endHole - diff.startHole;
 

@@ -8,8 +8,8 @@ struct DifficultyInfo;
 struct RPGlfConfig
 {
 	static void makeRandomWind();
-	static void makeRandArray(s32, u32*);
-	static void makeWindSet(const DifficultyInfo&, const u32*, const u32*);
+	static void makeRandomArray(s32, s32*);
+	static void makeWindSet(const DifficultyInfo&, const u32*, const s32*);
 
 	static u32 mWindDirections[RPGlfDefine::HOLE_SIZE];
 	static u32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];
