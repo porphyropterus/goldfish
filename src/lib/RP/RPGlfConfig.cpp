@@ -4,15 +4,13 @@
 #include <cstdio>
 
 /// <summary>
-/// 
+/// Generates a random sequence of numbers 
+/// between 0-max (exclusive), with no duplicates.
 /// </summary>
-/// <param name="max"></param>
-/// <param name="pArray"></param>
+/// <param name="max">Upper limit of sequence</param>
+/// <param name="pArray">Pointer to array to fill</param>
 void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 {
-	u32 r0;
-
-	// Initialize array
 	for (u32 i = 0; i < max; i++)
 	{
 		pArray[i] = -max;
@@ -58,21 +56,26 @@ void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 /// Generate a pool of random speeds and directions, and choose 9 of each
 /// to represent the "wind set" for the current game.
 /// </summary>
-/// <param name="diff"> Selected difficulty </param>
+/// <param name="diff">Selected difficulty</param>
 void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 {
 	// Simulate all random number generations before wind is generated
 	RPUtlRandom::advance(CALC_BEFORE_WIND);
 
-	// Generate random arrays (values this function will hand-pick from)
+	// Generate random sequences
+	// (speed/dir, values this function will hand-pick from)
 	s32 randomDirs[randomDirArraySize];
-	//makeRandomArray(randomDirArraySize, randomDirs);
+	makeRandomSequence(randomDirArraySize, randomDirs);
 	s32 randomSpeeds[randomSpeedArraySize];
-	//makeRandomArray(randomSpeedArraySize, randomSpeeds);
+	makeRandomSequence(randomSpeedArraySize, randomSpeeds);
 
 	u32 gameLength = diff.endHole - diff.startHole;
 }
 
+/// <summary>
+/// Get static instance of RPGlfConfig class.
+/// </summary>
+/// <returns>RPGlfConfig instance</returns>
 RPGlfConfig* RPGlfConfig::getInstance()
 {
 	INSTANCE_GUARD(RPGlfConfig);

@@ -20,7 +20,7 @@ public:
 
 private:
 	inline RPUtlRandom() : mSeed(NULL) {}
-	u32 mSeed;
+	u32 mSeed; // at 804bf688
 
 	static RPUtlRandom* mInstance;
 	static RPUtlRandom* getInstance();

@@ -22,5 +22,6 @@ u64 OSGetTime()
 
 void OSTicksToCalendarTime(u64 ticks, OSCalendarTime* time)
 {
-
+	assert(false);
+	return;
 }
