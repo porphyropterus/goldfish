@@ -5,8 +5,8 @@
 #include <lib/rvl/OSTime.h>
 
 ///////////////////////
-#define DEBUG      //
-//#define __DO_TESTS //
+//#define DEBUG      //
+#define __DO_TESTS //
 //#define __CTIME    //
 ///////////////////////
 
@@ -51,6 +51,9 @@ int main()
 	// RPGlfConfig::makeWindSet(diff_Ninehole, NULL, NULL);
 
 #ifdef __DO_TESTS
+	// Seed for testing
+	RPUtlRandom::setSeed(0x04094C6F);
+
 	// Simulate all random number generations before wind is generated
 	RPUtlRandom::advance(CALC_BEFORE_WIND);
 

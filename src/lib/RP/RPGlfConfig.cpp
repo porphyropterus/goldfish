@@ -22,19 +22,14 @@ void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 	{
 		s32 signedResult = (s32)(RPUtlRandom::getF32() * (max - it));
 
-		s32 searchStart = 0;
-		u32 r5 = 0;
-
 		if (max > 0)
 		{
-			for (s32 i = 0; i < max; i++)
+			for (s32 i = 0, j = 0; i < max; i++)
 			{
-				if ((pArray[searchStart] < 0) && (--signedResult < 0))
+				if ((pArray[j] < 0) && (--signedResult < 0))
 				{
-					rlwinm(signedResult, r5, 2, 0x3FFFFFFF);
-
-					pArray[signedResult / sizeof(s32)] += max;
-					pArray[it] += r5;
+					pArray[j] += max;
+					pArray[it] += j;
 
 					if (++it >= max)
 					{
@@ -45,8 +40,7 @@ void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 				}
 				else
 				{
-					searchStart++;
-					r5++;
+					j++;
 				}
 			}
 		}
