@@ -17,21 +17,21 @@ void RPGlfConfig::makeRandomSequence(s32 max, s32* pArray)
 		pArray[i] = -max;
 	}
 
-	u32 it = 0;
+	u32 slotsFilled = 0;
 	while (true)
 	{
-		s32 signedResult = (s32)(RPUtlRandom::getF32() * (max - it));
+		s32 random = (s32)(RPUtlRandom::getF32() * (max - slotsFilled));
 
 		if (max > 0)
 		{
 			for (s32 i = 0, j = 0; i < max; i++)
 			{
-				if ((pArray[j] < 0) && (--signedResult < 0))
+				if ((pArray[j] < 0) && (--random < 0))
 				{
 					pArray[j] += max;
-					pArray[it] += j;
+					pArray[slotsFilled++] += j;
 
-					if (++it >= max)
+					if (slotsFilled >= max)
 					{
 						return;
 					}
