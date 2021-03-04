@@ -1,14 +1,10 @@
 #pragma once
 #include "types.h"
 #include <lib/RP/RPGlfDefine.h>
+#include <lib/RP/RPGlfWindSet.h>
 #include <string>
 
 struct DifficultyInfo;
-struct Wind
-{
-	u32 mDirection;
-	s32 mSpeed;
-};
 
 class RPGlfConfig
 {
@@ -16,14 +12,11 @@ public:
 	static void makeRandomSequence(s32, s32*);        // at 8029dea8
 	static void chooseWindSet(const DifficultyInfo&); // at 8029dcf4
 
-	static Wind* getWinds();
+	static RPGlfWindSet& getWindSet();
 
 private:
-	inline RPGlfConfig() : mWinds() {}
-	Wind mWinds[RPGlfDefine::HOLE_SIZE];
-
-	//u32 mWindDirs[RPGlfDefine::HOLE_SIZE];            // at 804a8b54
-	//s32 mWindSpeeds[RPGlfDefine::HOLE_SIZE];          // at 804a8b78
+	inline RPGlfConfig() : mWindSet() {}
+	RPGlfWindSet mWindSet;
 
 	static RPGlfConfig* mInstance;
 	static RPGlfConfig* getInstance();
@@ -52,3 +45,7 @@ const DifficultyInfo diff_Ninehole = { 0, 8, 0, 15 };
 const std::string windDirStrings[] = {
 	"S", "SE", "E", "NE", "N", "NW", "W", "SW"
 };
+
+const std::string wildCard = "*";
+
+RPGlfDefine::WindDir stringToDir(std::string&);

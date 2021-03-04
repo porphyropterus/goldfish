@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\lib\RP\RPGlfConfig.cpp" />
+    <ClCompile Include="src\lib\RP\RPGlfWindSet.cpp" />
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\WindArgParser.cpp" />
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ClInclude Include="src\lib\RP\RPGlfConfig.h" />
     <ClInclude Include="src\lib\RP\RPGlfDefine.h" />
+    <ClInclude Include="src\lib\RP\RPGlfWindSet.h" />
     <ClInclude Include="src\lib\RP\RPUtlRandom.h" />
     <ClInclude Include="src\lib\rvl\OSTime.h" />
     <ClInclude Include="src\types.h" />

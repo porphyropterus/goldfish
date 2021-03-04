@@ -13,12 +13,16 @@ namespace RPGlfDefine
         /* 0x0005 */ NORTHWEST,
         /* 0x0006 */ WEST,
         /* 0x0007 */ SOUTHWEST,
-        /* 0x0008 */ MAX_WIND_DIV
+        /* 0x0008 */ MAX_WIND_DIV,
+		// For command-line use
+		/* 0x0009 */ WILDCARD
 	};
 
 	enum WindSpd
 	{
-		/* 0x000F */ MAX_WIND_SPD = 15
+		/* 0x000F */ MAX_WIND_SPD = 15,
+		// For command-line use
+		/* 0x0010 */ WILDCARD = 16
 	};
 
     const u32 HOLE_SIZE = 9;

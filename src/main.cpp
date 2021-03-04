@@ -2,212 +2,106 @@
 #include "types.h"
 #include <lib/RP/RPUtlRandom.h>
 #include <lib/RP/RPGlfConfig.h>
+#include <lib/RP/RPGlfWindSet.h>
+#include "WindArgParser.h"
 #include <lib/rvl/OSTime.h>
 
-///////////////////////
-//#define DEBUG      //
-//#define __DO_TESTS //
-//#define __CTIME    //
-#define __WIND_GEN //
-///////////////////////
+static DifficultyInfo g_Diff;
 
 int main(u32 argc, char** argv)
 {
+	RPGlfWindSet targetWind;
 	OSCalendarTime ctime;
-	ctime.hour = NULL;
-	ctime.mday = NULL;
-	ctime.mon = NULL;
-	ctime.year = NULL;
-	ctime.wday = NULL;
-	ctime.yday = NULL;
 
-	// Dolphin only supports RTC up to the precision of seconds.
-	// As a result, the millisecond and microsecond fields
-	// of the calendar time will always have the same arbitrary values.
-	ctime.msec = DOLPHIN_MSEC;
-	ctime.usec = DOLPHIN_USEC;
+	// 9 hole default difficulty
+	g_Diff = diff_Ninehole;
 
-#ifdef __WIND_GEN
-	u32 correctDirs[] = {
-		0x0002, 0x0003, 0x0007, 0x0004, 0x0000, 0x0001, 0x0006, 0x0005, 0x0000
-	};
-	s32 correctSpeeds[] = {
-		0, 1, 2, 3, 4, 5, 6, 7, 8
-	};
-
-	for (u32 i = 0; i < 0xFFFFFFFF; i++)
+	for (u32 i = 0; i < argc; i++)
 	{
-		//RPUtlRandom::setSeed(0x11494C6F);
-		RPUtlRandom::setSeed(i);
-		RPGlfConfig::chooseWindSet(diff_Ninehole);
-
-		Wind* pWinds = RPGlfConfig::getWinds();
-
-		bool speed_correct = true, dir_correct = true;
-
-		// std::printf("Testing wind speeds...\n");
-		for (int i = 0; i < RPGlfDefine::HOLE_SIZE - 1; i++)
+		// Parse difficulty
+		if (stricmp(argv[i], "-d") == 0)
 		{
-			if (pWinds[i].mSpeed != correctSpeeds[i])
+			switch (*argv[i + 1])
 			{
-				speed_correct = false;
+			case 'B':
+				g_Diff = diff_Beginner;
 				break;
-				// printf("[ERROR] Expected %#.4x at pWindSpeeds[%d], got %#.4x.\n", correctSpeeds[i], i, pWinds[i].mSpeed);
+			case 'I':
+				g_Diff = diff_Intermediate;
+				break;
+			case 'E':
+				g_Diff = diff_Expert;
+				break;
+			case 'N':
+				g_Diff = diff_Ninehole;
+				break;
 			}
 		}
-		if (speed_correct)
+
+		if (stricmp(argv[i], "-w") == 0)
 		{
-			printf("OK (%#.8x)\n", i);
+			WindArgParser::parseTargetWindSet(std::string(argv[++i]), targetWind);
+			if (tryToFindSeedFromWindSet(targetWind, ctime))
+			{
+				printf("Seed found for your windset %s.\n Use %s as your Dolphin custom RTC time, and make sure you choose the right difficulty.",
+					targetWind.toString().c_str(), OSCalendarTimeToDolphinRTC(ctime).c_str());
+			}
 		}
 	}
 
-	//std::printf("\nTesting wind directions...\n");
-	//for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	//{
-	//	if (pWinds[i].mDirection != correctDirs[i])
-	//	{
-	//		dir_correct = false;
-	//		printf("[ERROR] Expected %s at pWindDirs[%d], got %s.\n", windDirStrings[correctDirs[i]].c_str(), i, windDirStrings[pWinds[i].mDirection].c_str());
-	//	}
-	//}
-	//if (dir_correct)
-	//{
-	//	printf("OK\n");
-	//}
-
-#endif
-#ifdef __CTIME
-	// 04:20
-	ctime.sec = 32;
-	ctime.min = 02;
-
-	ctime.hour = NULL;
-	ctime.mday = NULL;
-	ctime.mon = NULL;
-	ctime.year = NULL;
-	ctime.wday = NULL;
-	ctime.yday = NULL;
-
-	// Dolphin only supports RTC up to the precision of seconds.
-	// As a result, the millisecond and microsecond fields
-	// of the calendar time will always have the same arbitrary values.
-	ctime.msec = DOLPHIN_MSEC;
-	ctime.usec = DOLPHIN_USEC;
-
-	RPUtlRandom::initialize(ctime);
-	RPGlfConfig::chooseWindSet(diff_Ninehole);
-
-	s32* pSpeeds = RPGlfConfig::getWindSpeeds();
-	u32* pDirs = RPGlfConfig::getWindDirs();
-
-	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		std::printf("Hole %d: {%dmph, %s}\n", (i + 1), (pSpeeds[i] * 2), windDirStrings[pDirs[i]].c_str());
-	}
-
-	while (true);
-
-#endif
-
-#ifdef DEBUG
-	u32 correctDirs[] = {
-		0x0002, 0x0003, 0x0007, 0x0004, 0x0000, 0x0001, 0x0006, 0x0005, 0x0000
-	};
-	s32 correctSpeeds[] = {
-		0x000F, 0x0004, 0x0003, 0x000A, 0x000C, 0x0008, 0x000B, 0x0006, 0x0000
-	};
-
-	RPUtlRandom::setSeed(0x11494C6F);
-	//RPUtlRandom::setSeed(0x01f78a40);
-	RPGlfConfig::chooseWindSet(diff_Ninehole);
-
-	Wind* pWinds = RPGlfConfig::getWinds();
-
-	bool speed_correct = true, dir_correct = true;
-
-	std::printf("Testing wind speeds...\n");
-	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		if (pWinds[i].mSpeed != correctSpeeds[i])
-		{
-			speed_correct = false;
-			printf("[ERROR] Expected %#.4x at pWindSpeeds[%d], got %#.4x.\n", correctSpeeds[i], i, pWinds[i].mSpeed);
-		}
-}
-	if (speed_correct)
-	{
-		printf("OK\n");
-	}
-
-	std::printf("\nTesting wind directions...\n");
-	for (int i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		if (pWinds[i].mDirection != correctDirs[i])
-		{
-			dir_correct = false;
-			printf("[ERROR] Expected %s at pWindDirs[%d], got %s.\n", windDirStrings[correctDirs[i]].c_str(), i, windDirStrings[pWinds[i].mDirection].c_str());
-		}
-	}
-	if (dir_correct)
-	{
-		printf("OK\n");
-	}
-
-#else
-#ifdef __CTIME
-	RPUtlRandom::setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
-#endif
-#endif
-
-	// RPGlfConfig::makeWindSet(diff_Ninehole, NULL, NULL);
-
-#ifdef __DO_TESTS
-	// Seed for testing
-	RPUtlRandom::setSeed(0x04094C6F);
-
-	// Simulate all random number generations before wind is generated
-	RPUtlRandom::advance(CALC_BEFORE_WIND);
-
-	// Generate random array of wind directions
-	s32 arrayTest1[8];
-	RPGlfConfig::makeRandomSequence(randomDirArraySize, arrayTest1);
-	// Generate random array of wind speeds
-	s32 arrayTest2[16];
-	RPGlfConfig::makeRandomSequence(randomSpeedArraySize, arrayTest2);
-
-	bool correct = true, correct2 = true;
-	s32 correctArray1[8] = { 0x0001, 0x0002, 0x0003, 0x0006, 0x0005, 0x0007, 0x0004, 0x0000 };
-	s32 correctArray2[16] = { 0x0008, 0x000F, 0x000E, 0x0003, 0x0004, 0x0002, 0x0005, 0x000A,
-			 0x0001, 0x0006, 0x0000, 0x0009, 0x000B, 0x0007, 0x000D, 0x000C };
-
-	std::printf("Testing array 1...\n");
-	for (int i = 0; i < 8; i++)
-	{
-		if (arrayTest1[i] != correctArray1[i])
-		{
-			correct = false;
-			printf("[ERROR] Expected %#.4x at testArray1[%d], got %#.4x.\n", correctArray1[i], i, arrayTest1[i]);
-		}
-	}
-	if (correct)
-	{
-		printf("OK\n");
-	}
-
-	std::printf("\n\nTesting array 2...\n");
-	for (int i = 0; i < 16; i++)
-	{
-		if (arrayTest2[i] != correctArray2[i])
-		{
-			correct2 = false;
-			printf("[ERROR] Expected %#.4x at testArray2[%d], got %#.4x.\n", correctArray2[i], i, arrayTest2[i]);
-		}
-	}
-	if (correct2)
-	{
-		printf("OK");
-	}
-
-#endif
 	return 0;
+}
+
+/// <summary>
+/// Finds Dolphin-usable seed with the closest wind set to the target.
+/// </summary>
+/// <param name="target">Target (ideal) wind set</param>
+/// <param name="out">Calendar time output</param>
+/// <returns>True if the target was found, otherwise false</returns>
+bool tryToFindSeedFromWindSet(const RPGlfWindSet& target, OSCalendarTime& out)
+{
+	// Highest wind set score so far
+	u32 bestScore = 0;
+	// Best wind set found so far
+	RPGlfWindSet bestWind;
+
+	// Nested loop to try all possible Dolphin RTC seeds
+	for (u32 i = 0; i < 60; i++)
+	{
+		for (u32 j = 0; j < 60; j++)
+		{
+			// Setup calendar time for seed
+			out.min = i;
+			out.sec = j;
+			// Dolphin RTC has a precision of seconds, while the Wii supports milli/microseconds
+			// As a result, any Dolphin RTC time will always have a specific arbitrary value for milli/microseconds
+			// Unfortunately, this limits us from (60*60*1000*1000) seeds to only (60*60) when TASing.
+			out.msec = DOLPHIN_MSEC;
+			out.usec = DOLPHIN_USEC;
+
+			// Init seed
+			RPUtlRandom::initialize(out);
+			// Generate new wind set
+			RPGlfConfig::chooseWindSet(g_Diff);
+			RPGlfWindSet newWind = RPGlfConfig::getWindSet();
+			// If the newest wind set is closer to the target than the 
+			// best wind set, the new wind set becomes the best wind set
+			u32 score = newWind.scoreAgainstTarget(target);
+			if (score > bestScore)
+			{
+				bestScore = score;
+				std::memcpy(&bestWind, &newWind, sizeof(bestWind));
+			}
+
+			// If it is a perfect match, we don't need to search anymore
+			if (score == perfectScore)
+			{
+				std::printf("Match found !\n");
+				return true;
+			}
+		}
+	}
+
+	std::printf("A seed for %s could not be found.\n The closest seed is %s, which gave the wind set\n%s.",
+		target.toString().c_str(), OSCalendarTimeToDolphinRTC(out), bestWind.toString());
 }

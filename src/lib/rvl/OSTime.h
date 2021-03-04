@@ -46,6 +46,7 @@ struct OSCalendarTime
 #define DOLPHIN_USEC 111
 
 u64 OSGetTime();
+std::string OSCalendarTimeToDolphinRTC(const OSCalendarTime& time);
 void OSTicksToCalendarTime(u64 ticks, OSCalendarTime* time);
 
 const u32 YearDays[] = {

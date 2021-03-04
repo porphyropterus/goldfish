@@ -81,8 +81,8 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 		if ((i < diff.startHole) || (i > diff.endHole))
 		{
 			// If it won't, use dummy wind (32 S)
-			instance->mWinds[i].mDirection = RPGlfDefine::MAX_WIND_DIV;
-			instance->mWinds[i].mSpeed = RPGlfDefine::MAX_WIND_SPD;
+			instance->mWindSet.mWinds[i].mDirection = RPGlfDefine::MAX_WIND_DIV;
+			instance->mWindSet.mWinds[i].mSpeed = RPGlfDefine::MAX_WIND_SPD;
 		}
 		else
 		{
@@ -94,13 +94,12 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 			} while ((nextSpd < diff.minWind) && (nextSpd > diff.maxWind));
 
 			// It is valid, so let's use it
-			instance->mWinds[i].mSpeed = nextSpd;
+			instance->mWindSet.mWinds[i].mSpeed = nextSpd;
 
 			if (numNonzeroWinds < 8)
 			{
 				s32 nextDir = randomDirs[r27_i];
-				instance->mWinds[i].mDirection = nextDir;
-				// TO-DO: Verify this continue jumps to for loop top
+				instance->mWindSet.mWinds[i].mDirection = nextDir;
 				if (nextSpd <= 0) continue;
 				numNonzeroWinds++;
 				r27_i++;
@@ -112,17 +111,16 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 				// If the next wind speed was going to be zero, we take it
 				if (nextSpd == 0)
 				{
-					instance->mWinds[i].mDirection = RPGlfDefine::SOUTH;
-					// TO-DO: Verify this jumps to the top of the for loop.
+					instance->mWindSet.mWinds[i].mDirection = RPGlfDefine::SOUTH;
 					continue;
 				}
 				// Otherwise, we pick a random hole and override its speed with zero.
 				else
 				{
 					u32 rndNum = (u32)(RPUtlRandom::getF32() * gameLength) + diff.startHole;
-					instance->mWinds[rndNum].mSpeed = 0;
-					// This can't be right.
-					instance->mWinds[i].mDirection = instance->mWinds[rndNum].mDirection;
+					instance->mWindSet.mWinds[rndNum].mSpeed = 0;
+					// Pick a random direction from existing winds?
+					instance->mWindSet.mWinds[i].mDirection = instance->mWindSet.mWinds[rndNum].mDirection;
 				}
 			}
 		}
@@ -133,9 +131,9 @@ void RPGlfConfig::chooseWindSet(const DifficultyInfo& diff)
 /// Gets a pointer to the RPGlfConfig member array for winds.
 /// </summary>
 /// <returns>Wind array pointer</returns>
-Wind* RPGlfConfig::getWinds()
+RPGlfWindSet& RPGlfConfig::getWindSet()
 {
-	return getInstance()->mWinds;
+	return getInstance()->mWindSet;
 }
 
 /// <summary>
@@ -149,3 +147,27 @@ RPGlfConfig* RPGlfConfig::getInstance()
 }
 
 RPGlfConfig* RPGlfConfig::mInstance = NULL;
+
+/// <summary>
+/// Converts a direction string to a WindDir enum value
+/// </summary>
+/// <param name="s">Direction string</param>
+/// <returns>WindDir enum value</returns>
+RPGlfDefine::WindDir stringToDir(std::string& s)
+{
+	// Convert string to uppercase
+	for (u32 i = 0; i < s.length(); i++)
+	{
+		s[i] = std::toupper(s[i]);
+	}
+
+	if (s == "S") { return RPGlfDefine::SOUTH; }
+	else if (s == "SE") { return RPGlfDefine::SOUTHEAST; }
+	else if (s == "E") { return RPGlfDefine::EAST; }
+	else if (s == "NE") { return RPGlfDefine::NORTHEAST; }
+	else if (s == "N") { return RPGlfDefine::NORTH; }
+	else if (s == "NW") { return RPGlfDefine::NORTHWEST; }
+	else if (s == "W") { return RPGlfDefine::WEST; }
+	else if (s == "SW") { return RPGlfDefine::SOUTHWEST; }
+	else { return RPGlfDefine::MAX_WIND_DIV; }
+}
