@@ -8,7 +8,6 @@ public:
 
 public:
 	// Based on 801bea28, but not void signature
-	static void initialize(u64);
 	static void initialize(const OSCalendarTime&);
 
 	static void setSeed(u32);

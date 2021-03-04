@@ -21,7 +21,7 @@ int main(u32 argc, char** argv)
 		// Parse difficulty
 		if (stricmp(argv[i], "-d") == 0)
 		{
-			switch (*argv[i + 1])
+			switch (*argv[++i])
 			{
 			case 'B':
 				g_Diff = diff_Beginner;
