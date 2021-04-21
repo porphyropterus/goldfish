@@ -3,7 +3,8 @@
 #include <lib/RP/RPGlfWindSet.h>
 #include <string>
 
-struct WindArgParser
+namespace WindArgParser
 {
-	static int parseTargetWindSet(const std::string&, RPGlfWindSet&);
+    bool parseTargetWindSet(const std::string&, RPGlfWindSet&);
+    const std::string sWildcardStr = "*";
 };

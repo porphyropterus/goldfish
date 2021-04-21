@@ -9,7 +9,7 @@
 /// <param name="ctime">OSCalendarTime reference</param>
 void RPUtlRandom::initialize(const OSCalendarTime& ctime)
 {
-	setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
+    setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 }
 
 /// <summary>
@@ -18,13 +18,13 @@ void RPUtlRandom::initialize(const OSCalendarTime& ctime)
 /// <param name="seed">Specified seed</param>
 void RPUtlRandom::setSeed(u32 seed)
 {
-	//std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
-	getInstance()->mSeed = seed;
+    //std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
+    getInstance()->mSeed = seed;
 }
 
 u32 RPUtlRandom::getSeed()
 {
-	return getInstance()->mSeed;
+    return getInstance()->mSeed;
 }
 
 /// <summary>
@@ -33,12 +33,13 @@ u32 RPUtlRandom::getSeed()
 /// <returns>Seed after stepping forward one iteration</returns>
 u32 RPUtlRandom::calc()
 {
-	RPUtlRandom* instance = getInstance();
+    RPUtlRandom* instance = getInstance();
 
-	// Evaluate 64 bits and save lower 32 to replicate
-	// multiply low overflow arithmetic
-	u64 seed = instance->mSeed * SEED_STEP + 1;
-	return instance->mSeed = (u32)seed;
+    // Linear congruential generator implementation
+    // Old versions of glibc also use 69069 as the multiplier
+    // u64 used to replicate 750CL overflow
+    u64 seed = instance->mSeed * SEED_STEP + 1;
+    return instance->mSeed = (u32)seed;
 }
 
 /// <summary>
@@ -47,10 +48,8 @@ u32 RPUtlRandom::calc()
 /// <param name="n">Number of steps to advance</param>
 void RPUtlRandom::advance(u32 n)
 {
-	for (u32 i = 0; i < n; i++)
-	{
-		calc();
-	}
+    for (u32 i = 0; i < n; i++)
+        calc();
 }
 
 /// <summary>
@@ -59,7 +58,7 @@ void RPUtlRandom::advance(u32 n)
 /// <returns>Random u32</returns>
 u32 RPUtlRandom::getU32()
 {
-	return calc() >> 16;
+    return calc() >> 16;
 }
 
 /// <summary>
@@ -68,7 +67,7 @@ u32 RPUtlRandom::getU32()
 /// <returns>Random f32</returns>
 f32 RPUtlRandom::getF32()
 {
-	return (float)getU32() / 0x10000;
+    return (float)getU32() / 0x10000;
 }
 
 /// <summary>
@@ -77,8 +76,8 @@ f32 RPUtlRandom::getF32()
 /// <returns>RPUtlRandom instance</returns>
 RPUtlRandom* RPUtlRandom::getInstance()
 {
-	INSTANCE_GUARD(RPUtlRandom);
-	return mInstance;
+    INSTANCE_GUARD(RPUtlRandom);
+    return mInstance;
 }
 
 RPUtlRandom *RPUtlRandom::mInstance = NULL;

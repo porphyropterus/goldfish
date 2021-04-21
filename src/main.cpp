@@ -3,53 +3,70 @@
 #include <lib/RP/RPUtlRandom.h>
 #include <lib/RP/RPGlfConfig.h>
 #include <lib/RP/RPGlfWindSet.h>
+#include "DifficultyInfo.h"
 #include "WindArgParser.h"
 #include <lib/rvl/OSTime.h>
 
-static DifficultyInfo g_Diff;
+bool tryToFindSeedFromWindSet(const RPGlfWindSet& target, OSCalendarTime& out);
+void getWindSetFromSeed(u32 seed, RPGlfWindSet& out);
 
 int main(u32 argc, char** argv)
 {
-	RPGlfWindSet targetWind;
-	OSCalendarTime ctime;
+    RPGlfWindSet targetWind;
+    OSCalendarTime ctime;
 
-	// 9 hole default difficulty
-	g_Diff = diff_Ninehole;
+    // 9 hole default difficulty
+    DifficultyInfo d = diff_Ninehole;
 
-	for (u32 i = 0; i < argc; i++)
-	{
-		// Parse difficulty
-		if (stricmp(argv[i], "-d") == 0)
-		{
-			switch (*argv[++i])
-			{
-			case 'B':
-				g_Diff = diff_Beginner;
-				break;
-			case 'I':
-				g_Diff = diff_Intermediate;
-				break;
-			case 'E':
-				g_Diff = diff_Expert;
-				break;
-			case 'N':
-				g_Diff = diff_Ninehole;
-				break;
-			}
-		}
+    for (u32 i = 0; i < argc; i++)
+    {
+        // Parse difficulty
+        if (_stricmp(argv[i], "-d") == 0)
+        {
+            switch (*argv[++i])
+            {
+            case 'B':
+                d = diff_Beginner;
+                break;
+            case 'I':
+                d = diff_Intermediate;
+                break;
+            case 'E':
+                d = diff_Expert;
+                break;
+            case 'N':
+                d = diff_Ninehole;
+                break;
+            }
+        }
 
-		if (stricmp(argv[i], "-w") == 0)
-		{
-			WindArgParser::parseTargetWindSet(std::string(argv[++i]), targetWind);
-			if (tryToFindSeedFromWindSet(targetWind, ctime))
-			{
-				printf("Seed found for your windset %s.\n Use %s as your Dolphin custom RTC time, and make sure you choose the right difficulty.",
-					targetWind.toString().c_str(), OSCalendarTimeToDolphinRTC(ctime).c_str());
-			}
-		}
-	}
+        // Set chosen difficulty
+        RPGlfConfig::getInstance()->setDifficulty(d);
 
-	return 0;
+        if (_stricmp(argv[i], "-w") == 0)
+        {
+            WindArgParser::parseTargetWindSet(std::string(argv[++i]), targetWind);
+            if (tryToFindSeedFromWindSet(targetWind, ctime))
+            {
+                printf("Seed found for your windset %s.\n Use %s as your Dolphin custom RTC time, and make sure you choose the right difficulty.",
+                    targetWind.toString().c_str(), OSCalendarTimeToDolphinRTC(ctime).c_str());
+            }
+        }
+
+        // Get winds at seed
+        if (_stricmp(argv[i], "-s") == 0)
+        {
+            RPGlfWindSet wind;
+            
+            std::string seedstr = argv[++i];
+            u32 seed = std::stoi(seedstr);
+
+            getWindSetFromSeed(seed, wind);
+            std::printf("Seed: %d -> %s", seed, wind.toString().c_str());
+        }
+    }
+
+    return 0;
 }
 
 /// <summary>
@@ -60,48 +77,61 @@ int main(u32 argc, char** argv)
 /// <returns>True if the target was found, otherwise false</returns>
 bool tryToFindSeedFromWindSet(const RPGlfWindSet& target, OSCalendarTime& out)
 {
-	// Highest wind set score so far
-	u32 bestScore = 0;
-	// Best wind set found so far
-	RPGlfWindSet bestWind;
+    // Highest wind set score so far
+    u32 bestScore = 0;
+    // Best wind set found so far
+    RPGlfWindSet bestWind;
 
-	// Nested loop to try all possible Dolphin RTC seeds
-	for (u32 i = 0; i < 60; i++)
-	{
-		for (u32 j = 0; j < 60; j++)
-		{
-			// Setup calendar time for seed
-			out.min = i;
-			out.sec = j;
-			// Dolphin RTC has a precision of seconds, while the Wii supports milli/microseconds
-			// As a result, any Dolphin RTC time will always have a specific arbitrary value for milli/microseconds
-			// Unfortunately, this limits us from (60*60*1000*1000) seeds to only (60*60) when TASing.
-			out.msec = DOLPHIN_MSEC;
-			out.usec = DOLPHIN_USEC;
+    // Nested loop to try all possible Dolphin RTC seeds
+    for (u32 i = 0; i < 60; i++) // min
+    {
+        for (u32 j = 0; j < 60; j++) // sec
+        {
+            // Setup calendar time for seed
+            out.min = i;
+            out.sec = j;
 
-			// Init seed
-			RPUtlRandom::initialize(out);
-			// Generate new wind set
-			RPGlfConfig::chooseWindSet(g_Diff);
-			RPGlfWindSet newWind = RPGlfConfig::getWindSet();
-			// If the newest wind set is closer to the target than the 
-			// best wind set, the new wind set becomes the best wind set
-			u32 score = newWind.scoreAgainstTarget(target);
-			if (score > bestScore)
-			{
-				bestScore = score;
-				std::memcpy(&bestWind, &newWind, sizeof(bestWind));
-			}
+            // Dolphin RTC has a precision of seconds due to it's usage of time_t.
+            // As a result, when recording or playing back a movie, the millisecond and microsecond values will be set to zero.
+            // If no movie is being recorded/played, the values are initialized to that of your computer's system time.
+            // Because this tool is designed for TASing, the values will be initialized to zero here.
+            out.msec = 0;
+            out.usec = 0;
 
-			// If it is a perfect match, we don't need to search anymore
-			if (score == perfectScore)
-			{
-				std::printf("Match found !\n");
-				return true;
-			}
-		}
-	}
+            // Init seed
+            RPUtlRandom::initialize(out);
+            // Generate new wind set
+            RPGlfWindSet newWind = RPGlfConfig::getInstance()->getWindSet();
 
-	std::printf("A seed for %s could not be found.\n The closest seed is %s, which gave the wind set\n%s.",
-		target.toString().c_str(), OSCalendarTimeToDolphinRTC(out), bestWind.toString());
+            // If the newest wind set is closer to the target than the 
+            // best wind set, the new wind set becomes the best wind set
+            u32 score = newWind.scoreAgainstTarget(target);
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestWind = newWind;
+            }
+
+            // If it is a perfect match, we don't need to search anymore
+            if (score == perfectScore)
+            {
+                std::printf("Match found !\n");
+                return true;
+            }
+        }
+    }
+
+    std::printf("A seed for %s could not be found.\n The closest seed is %s, which gave the wind set\n%s.",
+        target.toString().c_str(), OSCalendarTimeToDolphinRTC(out).c_str(), bestWind.toString().c_str());
+
+    return false;
+}
+
+void getWindSetFromSeed(u32 seed, RPGlfWindSet& out)
+{
+    RPGlfConfig* pInstance = RPGlfConfig::getInstance();
+
+    RPUtlRandom::setSeed(seed);
+    pInstance->chooseWindSet();
+    out = pInstance->getWindSet();
 }

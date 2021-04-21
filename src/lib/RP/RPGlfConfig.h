@@ -2,30 +2,31 @@
 #include "types.h"
 #include <lib/RP/RPGlfDefine.h>
 #include <lib/RP/RPGlfWindSet.h>
+#include "DifficultyInfo.h"
 #include <string>
-
-struct DifficultyInfo;
 
 class RPGlfConfig
 {
 public:
-	static void makeRandomSequence(s32, s32*);        // at 8029dea8
-	static void chooseWindSet(const DifficultyInfo&); // at 8029dcf4
+    void makeRandomSequence(s32, s32*);        // at 8029dea8
+    void chooseWindSet(); // at 8029dcf4
+    
+    RPGlfWindSet& getWindSet();
+    Wind& getWind(u32);
 
-	static RPGlfWindSet& getWindSet();
+    void setWind(u32, const Wind&);
+    void setDifficulty(const DifficultyInfo&);
+
+    DifficultyInfo& getDifficulty();
+
+    static RPGlfConfig* getInstance();
 
 private:
-	inline RPGlfConfig() : mWindSet() {}
-	RPGlfWindSet mWindSet;
+    inline RPGlfConfig() : mWindSet() {}
+    RPGlfWindSet mWindSet;
+    DifficultyInfo mDiff;
 
-	static RPGlfConfig* mInstance;
-	static RPGlfConfig* getInstance();
-};
-
-struct DifficultyInfo
-{
-	u32 startHole, endHole;
-	s32 minWind, maxWind;
+    static RPGlfConfig* mInstance;
 };
 
 // Array sizes for makeRandomSequence
@@ -37,13 +38,8 @@ const u32 randomDirArraySize = 8;
 // and makeWindSet being called to be accurate
 const u32 CALC_BEFORE_WIND = 9;
 
-const DifficultyInfo diff_Beginner = { 0, 2, 0, 5 };
-const DifficultyInfo diff_Intermediate = { 3, 5, 5, 10 };
-const DifficultyInfo diff_Expert = { 6, 8, 10, 16 };
-const DifficultyInfo diff_Ninehole = { 0, 8, 0, 15 };
-
 const std::string windDirStrings[] = {
-	"S", "SE", "E", "NE", "N", "NW", "W", "SW"
+    "S", "SE", "E", "NE", "N", "NW", "W", "SW"
 };
 
 const std::string wildCard = "*";

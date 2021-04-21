@@ -15,4 +15,4 @@ typedef float           f32;
 typedef double          f64;
 
 #define INSTANCE_GUARD(x) \
-	if (!mInstance) { mInstance = new x(); }
+    if (!mInstance) { mInstance = new x(); }

@@ -22,10 +22,12 @@
     <ClCompile Include="src\lib\RP\RPGlfConfig.cpp" />
     <ClCompile Include="src\lib\RP\RPGlfWindSet.cpp" />
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp" />
+    <ClCompile Include="src\lib\rvl\OSTime.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\WindArgParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DifficultyInfo.h" />
     <ClInclude Include="src\lib\RP\RPGlfConfig.h" />
     <ClInclude Include="src\lib\RP\RPGlfDefine.h" />
     <ClInclude Include="src\lib\RP\RPGlfWindSet.h" />
@@ -134,6 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +151,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

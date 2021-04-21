@@ -27,6 +27,7 @@
 
 #pragma once
 #include "types.h"
+#include <string>
 
 struct OSCalendarTime
 {
@@ -42,9 +43,6 @@ struct OSCalendarTime
     /* 0x24 */ s32 usec;
 }; /* sizeof = 0x28 (40u)*/
 
-#define DOLPHIN_MSEC 595
-#define DOLPHIN_USEC 111
-
 u64 OSGetTime();
 std::string OSCalendarTimeToDolphinRTC(const OSCalendarTime& time);
 void OSTicksToCalendarTime(u64 ticks, OSCalendarTime* time);
@@ -55,17 +53,3 @@ const u32 YearDays[] = {
 const u32 LeapYearDays[] = {
     0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335
 };
-
-#define TB_BUS_CLOCK				243000000u
-#define TB_CORE_CLOCK				729000000u
-#define TB_TIMER_CLOCK				(TB_BUS_CLOCK/4000)	
-
-#define ticks_to_secs(ticks)		(((ticks)/(TB_TIMER_CLOCK*1000)))
-#define ticks_to_millisecs(ticks)	(((ticks)/(TB_TIMER_CLOCK)))
-#define ticks_to_microsecs(ticks)	((((ticks)*8)/(TB_TIMER_CLOCK/125)))
-#define ticks_to_nanosecs(ticks)	((((ticks)*8000)/(TB_TIMER_CLOCK/125)))
-
-#define secs_to_ticks(sec)			((sec)*(TB_TIMER_CLOCK*1000))
-#define millisecs_to_ticks(msec)	((msec)*(TB_TIMER_CLOCK))
-#define microsecs_to_ticks(usec)	(((usec)*(TB_TIMER_CLOCK/125))/8)
-#define nanosecs_to_ticks(nsec)		(((nsec)*(TB_TIMER_CLOCK/125))/8000)

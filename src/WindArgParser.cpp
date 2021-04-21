@@ -9,51 +9,51 @@
 /// </summary>
 /// <param name="arg">Command-line argument</param>
 /// <param name="out">Output wind set</param>
-int WindArgParser::parseTargetWindSet(const std::string& arg, RPGlfWindSet& out)
+bool WindArgParser::parseTargetWindSet(const std::string& arg, RPGlfWindSet& out)
 {
-	// Expects a full wind set (delimited)
-	assert(std::count(arg.begin(), arg.end(), ",") == RPGlfDefine::HOLE_SIZE);
+    // Split the string by its commas
+    u32 pos;
+    std::string wind;
+    for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+    {
+        // Get substring of i'th wind
+        pos = arg.find(",");
+        if (!pos) return false;
+        wind = arg.substr(pos);
 
-	// Split the string by its commas
-	u32 pos;
-	std::string wind;
-	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		// Get substring of i'th wind
-		pos = arg.find(",");
-		wind = arg.substr(pos);
+        std::string speed;
+        std::string direction;
 
-		std::string speed;
-		std::string direction;
+        // Read each character of substring and split into speed + direction
+        for (u32 i = 0; i < wind.length(); i++)
+        {
+            // Wildcard ("*")
+            if (wind[i] == '*')
+            {
+                // Speed takes priority
+                if (speed.length() == 0)
+                {
+                    speed.push_back(wind[i]);
+                }
+                else
+                {
+                    direction.push_back(wind[i]);
+                }
+            }
+            else if ((wind[i] >= '0') && (wind[i] <= '9'))
+            {
+                speed.push_back(wind[i]);
+            }
+            else
+            {
+                direction.push_back(wind[i]);
+            }
+        }
 
-		// Read each character of substring and split into speed + direction
-		for (u32 i = 0; i < wind.length(); i++)
-		{
-			// Wildcard ("*")
-			if (wind[i] == '*')
-			{
-				// Speed takes priority
-				if (speed.length() == 0)
-				{
-					speed.push_back(wind[i]);
-				}
-				else
-				{
-					direction.push_back(wind[i]);
-				}
-			}
-			else if ((wind[i] >= '0') && (wind[i] <= '9'))
-			{
-				speed.push_back(wind[i]);
-			}
-			else
-			{
-				direction.push_back(wind[i]);
-			}
-		}
+        // Convert arg to data
+        out.mWinds[i].mSpeed = (speed == sWildcardStr) ? RPGlfDefine::WILDCARD_SPD : std::stoi(speed);
+        out.mWinds[i].mDirection = (direction == sWildcardStr) ? RPGlfDefine::WILDCARD_DIR : stringToDir(direction);
+    }
 
-		// Convert arg to data
-		out.mWinds[i].mSpeed = (speed == "*") ? RPGlfDefine::WindSpd::WILDCARD : std::stoi(speed);
-		out.mWinds[i].mDirection = (direction == "*") ? RPGlfDefine::WindDir::WILDCARD : stringToDir(direction);
-	}
+    return true;
 }

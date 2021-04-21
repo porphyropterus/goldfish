@@ -13,31 +13,31 @@
 /// <returns></returns>
 Score_t RPGlfWindSet::scoreAgainstTarget(const RPGlfWindSet& target)
 {
-	Score_t myScore = 0;
-	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		// Wildcard counts as them matching
-		if (mWinds[i].mDirection != RPGlfDefine::WindDir::WILDCARD)
-		{
-			myScore += scoreBase - std::abs((int)mWinds[i].mDirection - (int)target.mWinds->mDirection);
-		}
-		else
-		{
-			myScore += scoreBase;
-		}
-		// The speed score is incremented by 1 and then halved
-		// to have about the same priority in the total score as the direction would.
-		if (mWinds[i].mSpeed != RPGlfDefine::WindSpd::WILDCARD)
-		{
-			myScore += scoreBase - (std::abs((int)mWinds[i].mSpeed - (int)target.mWinds->mSpeed) + 1) / 2;
-		}
-		else
-		{
-			myScore += scoreBase;
-		}
-	}
+    Score_t myScore = 0;
+    for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+    {
+        // Wildcard counts as them matching
+        if (mWinds[i].mDirection != RPGlfDefine::WILDCARD_DIR)
+        {
+            myScore += scoreBase - std::abs((int)mWinds[i].mDirection - (int)target.mWinds->mDirection);
+        }
+        else
+        {
+            myScore += scoreBase;
+        }
+        // The speed score is incremented by 1 and then halved
+        // to have about the same priority in the total score as the direction would.
+        if (mWinds[i].mSpeed != RPGlfDefine::WILDCARD_SPD)
+        {
+            myScore += scoreBase - (std::abs((int)mWinds[i].mSpeed - (int)target.mWinds->mSpeed) + 1) / 2;
+        }
+        else
+        {
+            myScore += scoreBase;
+        }
+    }
 
-	return myScore;
+    return myScore;
 }
 
 /// <summary>
@@ -46,21 +46,29 @@ Score_t RPGlfWindSet::scoreAgainstTarget(const RPGlfWindSet& target)
 /// <returns>Wind set string</returns>
 std::string RPGlfWindSet::toString() const
 {
-	std::string result;
-	result += "{";
+    std::string result;
+    result += "{";
 
-	// Convert each speed + direction to string (keep wildcard if that was part of the input)
-	for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
-	{
-		result += (mWinds[i].mSpeed != RPGlfDefine::WindSpd::WILDCARD) ? std::to_string(mWinds[i].mSpeed) : wildCard;
-		result += (mWinds[i].mDirection != RPGlfDefine::WindDir::WILDCARD) ? windDirStrings[mWinds[i].mDirection] : wildCard;
+    // Convert each speed + direction to string (keep wildcard if that was part of the input)
+    for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+    {
+        result += (mWinds[i].mSpeed != RPGlfDefine::WILDCARD_SPD) ? std::to_string(mWinds[i].mSpeed) : wildCard;
+        result += (mWinds[i].mDirection != RPGlfDefine::WILDCARD_DIR) ? windDirStrings[mWinds[i].mDirection] : wildCard;
 
-		// Comma separated list (except last item)
-		if (i < RPGlfDefine::HOLE_SIZE - 1)
-		{
-			result += ", ";
-		}
-	}
+        // Comma separated list (except last item)
+        if (i < RPGlfDefine::HOLE_SIZE - 1)
+        {
+            result += ", ";
+        }
+    }
 
-	return result + "}";
+    return result + "}";
+}
+
+RPGlfWindSet& RPGlfWindSet::operator=(const RPGlfWindSet& rhs)
+{
+    for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
+        mWinds[i] = rhs.mWinds[i];
+
+    return *this;
 }
