@@ -58,11 +58,12 @@ int main(u32 argc, char** argv)
         {
             RPGlfWindSet wind;
             
+            // Get input seed
             std::string seedstr = argv[++i];
-            u32 seed = std::stoi(seedstr);
+            u32 seed = std::stoi(seedstr, nullptr, 16);
 
             getWindSetFromSeed(seed, wind);
-            std::printf("Seed: %d -> %s", seed, wind.toString().c_str());
+            std::printf("Seed: 0x%X -> %s", seed, wind.toString().c_str());
         }
     }
 

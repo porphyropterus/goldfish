@@ -52,7 +52,7 @@ std::string RPGlfWindSet::toString() const
     // Convert each speed + direction to string (keep wildcard if that was part of the input)
     for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
     {
-        result += (mWinds[i].mSpeed != RPGlfDefine::WILDCARD_SPD) ? std::to_string(mWinds[i].mSpeed) : wildCard;
+        result += (mWinds[i].mSpeed != RPGlfDefine::WILDCARD_SPD) ? std::to_string(mWinds[i].mSpeed) + "m/s " : wildCard;
         result += (mWinds[i].mDirection != RPGlfDefine::WILDCARD_DIR) ? windDirStrings[mWinds[i].mDirection] : wildCard;
 
         // Comma separated list (except last item)
