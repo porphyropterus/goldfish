@@ -85,6 +85,14 @@ int main(u32 argc, char** argv)
         // Dump all possible wind sets (0x00000000 -> 0xFFFFFFFF)
         if (_stricmp(argv[i], "-dump-all") == 0)
         {
+            std::printf("Are you sure you want to dump ALL possible seeds?\n");
+            std::printf("This will take ~116GB of space.\n");
+            std::printf("Would you like to continue with the dump? (Y/N)");
+
+            char c;
+            std::cin >> c;
+            if (std::toupper(c) == 'N') break;
+
             std::printf("Dumping all possible wind sets to wind_all.csv...\n");
             dumpWindSeeds(true);
         }
@@ -213,8 +221,8 @@ void dumpWindSeeds(bool bNonRtc)
             // Setup time
             time.min = i;
             time.sec = j;
-            time.msec = 0;
-            time.usec = 0;
+            time.msec = 603;
+            time.usec = 591;
 
             line += std::to_string(i) + ",";
             line += std::to_string(j) + ",";
