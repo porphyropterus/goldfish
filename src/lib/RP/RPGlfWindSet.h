@@ -24,7 +24,8 @@ struct RPGlfWindSet
     Wind mWinds[RPGlfDefine::HOLE_SIZE];
 
     Score_t scoreAgainstTarget(const RPGlfWindSet&);
-    std::string toString(std::string startDelim = "{", std::string endDelim = "}") const;
+    std::string toString(std::string setStartDelim = "{", std::string setEndDelim = "}",
+        std::string termStartDelim = "", std::string termEndDelim = ", ", bool bCloseEndDelim = false) const;
     RPGlfWindSet& operator=(const RPGlfWindSet& rhs);
 };
 

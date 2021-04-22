@@ -7,9 +7,12 @@
 #include "WindArgParser.h"
 #include <lib/rvl/OSTime.h>
 #include <fstream>
+#include <sstream>
 
 bool tryToFindSeedFromWindSet(const RPGlfWindSet& target, OSCalendarTime& out);
 void getWindSetFromSeed(u32 seed, RPGlfWindSet& out);
+void dumpWindSeeds(bool bNonRtc);
+std::string u32ToHexStr(u32 i);
 
 int main(u32 argc, char** argv)
 {
@@ -162,7 +165,6 @@ void dumpWindSeeds(bool bNonRtc)
     RPGlfConfig* pInstance = RPGlfConfig::getInstance();
     RPGlfWindSet wind;
     OSCalendarTime time;
-    u32 seed;
 
     // Non-Dolphin RTC seeds allowed
     if (bNonRtc)
@@ -175,7 +177,7 @@ void dumpWindSeeds(bool bNonRtc)
 
             // No need to calculate seed with initialize
             RPUtlRandom::setSeed(i);
-            line += "\"" + std::to_string(i) + "\", ";
+            line += "\"" + u32ToHexStr(i) + "\", ";
             
             // Generate wind
             pInstance->chooseWindSet();
@@ -186,18 +188,24 @@ void dumpWindSeeds(bool bNonRtc)
             line += wind.toString("\"", "\"");
 
             // Write to CSV
+            line += "\n";
             oStrm.write(line.c_str(), line.length());
         }
-        oStrm.close();
 
+        oStrm.close();
         return;
     }
 
     // Dolphin RTC seeds only
     std::ofstream oStrm("wind_dolphin.csv", std::ios::trunc);
-    for (u32 i = 0; i < 59; i++) // min
+    // CSV column titles
+    std::string csvHeader("Clock Min, Clock Sec, Seed, ");
+    csvHeader += "Hole 1, Hole 2, Hole 3, Hole 4, Hole 5, Hole 6, Hole 7, Hole 8, Hole 9\n";
+    oStrm.write(csvHeader.c_str(), csvHeader.length());
+    // Dolphin doesnt support msec/usec
+    for (u32 i = 0; i < 60; i++) // min
     {
-        for (u32 j = 0; j < 59; j++) // sec
+        for (u32 j = 0; j < 60; j++) // sec
         {
             // Next line of output
             std::string line;
@@ -205,20 +213,42 @@ void dumpWindSeeds(bool bNonRtc)
             // Setup time
             time.min = i;
             time.sec = j;
+            time.hour = NULL;
+            time.mday = NULL;
+            time.mon = NULL;
+            time.year = NULL;
+            time.wday = NULL;
+            time.yday = NULL;
+            time.msec = NULL;
+            time.usec = NULL;
+
+            line += std::to_string(i) + ",";
+            line += std::to_string(j) + ",";
 
             // Init random
             RPUtlRandom::initialize(time);
-            line += "\"" + std::to_string(RPUtlRandom::getSeed()) + "\", ";
+            line += u32ToHexStr(RPUtlRandom::getSeed()) + ",";
 
             // Generate wind
             pInstance->chooseWindSet();
 
             // Save result
             wind = pInstance->getWindSet();
-            line += wind.toString("\"", "\"");
+            line += wind.toString("", "", "\"", "\",", true);
 
             // Write to CSV
+            line += "\n";
             oStrm.write(line.c_str(), line.length());
         }
     }
+
+    oStrm.close();
+}
+
+std::string u32ToHexStr(u32 i)
+{
+    std::stringstream sStrm;
+    sStrm << "0x" << std::hex << i;
+
+    return sStrm.str();
 }
