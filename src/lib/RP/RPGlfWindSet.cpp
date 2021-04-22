@@ -42,12 +42,13 @@ Score_t RPGlfWindSet::scoreAgainstTarget(const RPGlfWindSet& target)
 
 /// <summary>
 /// Returns data in wind set in string format
+/// Custom delimiter support for things like CSV data analysis
 /// </summary>
 /// <returns>Wind set string</returns>
-std::string RPGlfWindSet::toString() const
+std::string RPGlfWindSet::toString(std::string startDelim = "{", std::string endDelim = "}") const
 {
     std::string result;
-    result += "{";
+    result += startDelim;
 
     // Convert each speed + direction to string (keep wildcard if that was part of the input)
     for (u32 i = 0; i < RPGlfDefine::HOLE_SIZE; i++)
@@ -62,7 +63,7 @@ std::string RPGlfWindSet::toString() const
         }
     }
 
-    return result + "}";
+    return result + endDelim;
 }
 
 RPGlfWindSet& RPGlfWindSet::operator=(const RPGlfWindSet& rhs)

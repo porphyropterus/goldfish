@@ -6,6 +6,7 @@
 #include "DifficultyInfo.h"
 #include "WindArgParser.h"
 #include <lib/rvl/OSTime.h>
+#include <fstream>
 
 bool tryToFindSeedFromWindSet(const RPGlfWindSet& target, OSCalendarTime& out);
 void getWindSetFromSeed(u32 seed, RPGlfWindSet& out);
@@ -43,6 +44,7 @@ int main(u32 argc, char** argv)
         // Set chosen difficulty
         RPGlfConfig::getInstance()->setDifficulty(d);
 
+        // Find wind set seed
         if (_stricmp(argv[i], "-w") == 0)
         {
             WindArgParser::parseTargetWindSet(std::string(argv[++i]), targetWind);
@@ -51,6 +53,8 @@ int main(u32 argc, char** argv)
                 printf("Seed found for your windset %s.\n Use %s as your Dolphin custom RTC time, and make sure you choose the right difficulty.",
                     targetWind.toString().c_str(), OSCalendarTimeToDolphinRTC(ctime).c_str());
             }
+
+            return 0;
         }
 
         // Get winds at seed
@@ -64,6 +68,22 @@ int main(u32 argc, char** argv)
 
             getWindSetFromSeed(seed, wind);
             std::printf("Seed: 0x%X -> %s", seed, wind.toString().c_str());
+
+            return 0;
+        }
+
+        // Dump all Dolphin-usable wind seeds (No msec/usec)
+        if (_stricmp(argv[i], "-dump-dolphin") == 0)
+        {
+            std::printf("Dumping all Dolphin-usable wind sets to wind_dolphin.csv...\n");
+            dumpWindSeeds(false);
+        }
+
+        // Dump all possible wind sets (0x00000000 -> 0xFFFFFFFF)
+        if (_stricmp(argv[i], "-dump-all") == 0)
+        {
+            std::printf("Dumping all possible wind sets to wind_all.csv...\n");
+            dumpWindSeeds(true);
         }
     }
 
@@ -135,4 +155,70 @@ void getWindSetFromSeed(u32 seed, RPGlfWindSet& out)
     RPUtlRandom::setSeed(seed);
     pInstance->chooseWindSet();
     out = pInstance->getWindSet();
+}
+
+void dumpWindSeeds(bool bNonRtc)
+{
+    RPGlfConfig* pInstance = RPGlfConfig::getInstance();
+    RPGlfWindSet wind;
+    OSCalendarTime time;
+    u32 seed;
+
+    // Non-Dolphin RTC seeds allowed
+    if (bNonRtc)
+    {
+        std::ofstream oStrm("wind_all.csv", std::ios::trunc);
+        for (u32 i = 0x00000000; i < 0xFFFFFFFF; i++)
+        {
+            // Next line of output
+            std::string line;
+
+            // No need to calculate seed with initialize
+            RPUtlRandom::setSeed(i);
+            line += "\"" + std::to_string(i) + "\", ";
+            
+            // Generate wind
+            pInstance->chooseWindSet();
+
+            // Save result
+            wind = pInstance->getWindSet();
+            // Comma delimiter for CSV
+            line += wind.toString("\"", "\"");
+
+            // Write to CSV
+            oStrm.write(line.c_str(), line.length());
+        }
+        oStrm.close();
+
+        return;
+    }
+
+    // Dolphin RTC seeds only
+    std::ofstream oStrm("wind_dolphin.csv", std::ios::trunc);
+    for (u32 i = 0; i < 59; i++) // min
+    {
+        for (u32 j = 0; j < 59; j++) // sec
+        {
+            // Next line of output
+            std::string line;
+
+            // Setup time
+            time.min = i;
+            time.sec = j;
+
+            // Init random
+            RPUtlRandom::initialize(time);
+            line += "\"" + std::to_string(RPUtlRandom::getSeed()) + "\", ";
+
+            // Generate wind
+            pInstance->chooseWindSet();
+
+            // Save result
+            wind = pInstance->getWindSet();
+            line += wind.toString("\"", "\"");
+
+            // Write to CSV
+            oStrm.write(line.c_str(), line.length());
+        }
+    }
 }
