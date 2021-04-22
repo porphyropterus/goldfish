@@ -67,7 +67,7 @@ int main(u32 argc, char** argv)
             
             // Get input seed
             std::string seedstr = argv[++i];
-            u32 seed = std::stoi(seedstr, nullptr, 16);
+            u32 seed = std::stoul(seedstr, nullptr, 16);
 
             getWindSetFromSeed(seed, wind);
             std::printf("Seed: 0x%X -> %s", seed, wind.toString().c_str());
@@ -213,14 +213,8 @@ void dumpWindSeeds(bool bNonRtc)
             // Setup time
             time.min = i;
             time.sec = j;
-            time.hour = NULL;
-            time.mday = NULL;
-            time.mon = NULL;
-            time.year = NULL;
-            time.wday = NULL;
-            time.yday = NULL;
-            time.msec = NULL;
-            time.usec = NULL;
+            time.msec = 0;
+            time.usec = 0;
 
             line += std::to_string(i) + ",";
             line += std::to_string(j) + ",";
