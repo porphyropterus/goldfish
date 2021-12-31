@@ -26,8 +26,10 @@
  */
 
 #pragma once
+
+#ifndef RVL_OS_TIME_H
+#define RVL_OS_TIME_H
 #include "types.h"
-#include <string>
 
 struct OSCalendarTime
 {
@@ -41,15 +43,7 @@ struct OSCalendarTime
     /* 0x1C */ s32 yday;
     /* 0x20 */ s32 msec;
     /* 0x24 */ s32 usec;
-}; /* sizeof = 0x28 (40u)*/
-
-u64 OSGetTime();
-std::string OSCalendarTimeToDolphinRTC(const OSCalendarTime& time);
-void OSTicksToCalendarTime(u64 ticks, OSCalendarTime* time);
-
-const u32 YearDays[] = {
-    0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
 };
-const u32 LeapYearDays[] = {
-    0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335
-};
+
+void OSCalendarTimeToDolphinRTC(char* buf, const OSCalendarTime& time);
+#endif

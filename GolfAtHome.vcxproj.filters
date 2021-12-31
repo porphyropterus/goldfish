@@ -21,13 +21,13 @@
     <ClCompile Include="src\lib\RP\RPUtlRandom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\RP\RPGlfConfig.cpp">
+    <ClCompile Include="src\lib\RP\RPGolConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\WindArgParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\lib\RP\RPGlfWindSet.cpp">
+    <ClCompile Include="src\lib\RP\RPGolWindSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\lib\rvl\OSTime.cpp">
@@ -44,19 +44,19 @@
     <ClInclude Include="src\lib\rvl\OSTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\RP\RPGlfDefine.h">
+    <ClInclude Include="src\lib\RP\RPGolDefine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\RP\RPGlfConfig.h">
+    <ClInclude Include="src\lib\RP\RPGolConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\WindArgParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\lib\RP\RPGlfWindSet.h">
+    <ClInclude Include="src\lib\RP\RPGolWindSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DifficultyInfo.h">
+    <ClInclude Include="src\lib\RP\RPGolDifficulty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

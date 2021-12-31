@@ -1,7 +1,5 @@
-#include <lib/rvl/OSTime.h>
+#include <rvl/OSTime.h>
 #include "RPUtlRandom.h"
-#include <cstdio>
-#include <cassert>
 
 /// <summary>
 /// Initialize seed using OSCalendarTime object
@@ -9,37 +7,25 @@
 /// <param name="ctime">OSCalendarTime reference</param>
 void RPUtlRandom::initialize(const OSCalendarTime& ctime)
 {
-    setSeed(ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
+    GetInstance()->mSeed = (ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 }
 
 /// <summary>
-/// Set seed to specified u32 value
+/// Initialize seed using 32-bit seed
 /// </summary>
-/// <param name="seed">Specified seed</param>
-void RPUtlRandom::setSeed(u32 seed)
+/// <param name="seed">Seed value</param>
+void RPUtlRandom::initialize(u32 seed)
 {
-    //std::printf("[RPUtlRandom::setSeed] Seed init -> %#.8x\n", seed);
-    getInstance()->mSeed = seed;
+    GetInstance()->mSeed = seed;
 }
 
+/// <summary>
+/// Get RNG seed
+/// </summary>
+/// <returns>32-bit seed</returns>
 u32 RPUtlRandom::getSeed()
 {
-    return getInstance()->mSeed;
-}
-
-/// <summary>
-/// Advance seed one step forward, and return its value
-/// </summary>
-/// <returns>Seed after stepping forward one iteration</returns>
-u32 RPUtlRandom::calc()
-{
-    RPUtlRandom* instance = getInstance();
-
-    // Linear congruential generator implementation
-    // Old versions of glibc also use 69069 as the multiplier
-    // u64 used to replicate 750CL overflow
-    u64 seed = instance->mSeed * SEED_STEP + 1;
-    return instance->mSeed = (u32)seed;
+    return GetInstance()->mSeed;
 }
 
 /// <summary>
@@ -48,8 +34,7 @@ u32 RPUtlRandom::calc()
 /// <param name="n">Number of steps to advance</param>
 void RPUtlRandom::advance(u32 n)
 {
-    for (u32 i = 0; i < n; i++)
-        calc();
+    for (u32 i = 0; i < n; i++) calc();
 }
 
 /// <summary>
@@ -67,17 +52,20 @@ u32 RPUtlRandom::getU32()
 /// <returns>Random f32</returns>
 f32 RPUtlRandom::getF32()
 {
-    return (float)getU32() / 0x10000;
+    return (float)(getU32() / 0x10000);
 }
 
 /// <summary>
-/// Get static instance of RPUtlRandom class.
+/// Advance seed one step forward, and return its value
 /// </summary>
-/// <returns>RPUtlRandom instance</returns>
-RPUtlRandom* RPUtlRandom::getInstance()
+/// <returns>Seed after stepping forward one iteration</returns>
+u32 RPUtlRandom::calc()
 {
-    INSTANCE_GUARD(RPUtlRandom);
-    return mInstance;
-}
+    RPUtlRandom* rng = GetInstance();
 
-RPUtlRandom *RPUtlRandom::mInstance = NULL;
+    // Linear congruential generator implementation
+    // Old versions of glibc also use 69069 as the multiplier
+    // u64 used to replicate overflow
+    u64 seed = rng->mSeed * SEED_STEP + 1;
+    return rng->mSeed = (u32)seed;
+}

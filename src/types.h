@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <cstdio>
+#include <cassert>
 
 typedef signed char     s8;
 typedef int16_t         s16;
@@ -13,6 +15,3 @@ typedef uint64_t        u64;
 
 typedef float           f32;
 typedef double          f64;
-
-#define INSTANCE_GUARD(x) \
-    if (!mInstance) { mInstance = new x(); }

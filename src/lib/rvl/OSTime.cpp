@@ -1,29 +1,20 @@
 #include "OSTime.h"
-#include <string>
 
-std::string OSCalendarTimeToDolphinRTC(const OSCalendarTime& time)
+void OSCalendarTimeToDolphinRTC(char* buf, const OSCalendarTime& time)
 {
+    // Date format string (Same format as dolphin RTC window)
+    constexpr const char rtcExample[] = "01/01/0001 00:00:00 AM";
+    constexpr const char* rtcFormat = "%2d/%2d/%2d %2d:%2d:%2d %s";
+
     // Hour is converted from military time
     bool isPm = false;
-    u32 timeHour = time.hour;
-    if (timeHour > 12)
+    u32 hour = time.hour;
+    if (hour > 12)
     {
-        timeHour -= 12;
+        hour -= 12;
         isPm = true;
     }
-
-    // Hour/minute/second must be two digits wide
-    char buf[2];
     
-    sprintf_s(buf, "%2d", timeHour);
-    std::string hour = buf;
-    
-    sprintf_s(buf, "%2d", time.min);
-    std::string min = buf;
-
-    sprintf_s(buf, "%2d", time.sec);
-    std::string sec = buf;
-
-    return std::to_string(time.mon) + "/" + std::to_string(time.mday) + "/" + std::to_string(time.year) +
-        " " + hour + ":" + min + ":" + sec;
+    std::snprintf(buf, sizeof(rtcExample), rtcFormat, time.mon, time.mday, time.year,
+        hour, time.min, time.sec, isPm ? "PM" : "AM");
 }

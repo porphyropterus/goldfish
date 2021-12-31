@@ -1,27 +1,33 @@
 #include "types.h"
-#include "lib/rvl/OSTime.h"
+
+struct OSCalendarTime;
 
 class RPUtlRandom
 {
 public:
-    static const u32 SEED_STEP = 69069;
+    static RPUtlRandom* GetInstance()
+    {
+        static RPUtlRandom instance;
+        return &instance;
+    }
 
-public:
-    // Based on 801bea28, but not void signature
-    static void initialize(const OSCalendarTime&);
+    static void initialize(const OSCalendarTime&); // at 801bea28
+    static void initialize(u32);
 
-    static void setSeed(u32);
     static u32 getSeed();
-    static u32 calc();   // inlined
     static void advance(u32);
     
-    static u32 getU32(); // inlined
-    static f32 getF32(); // inlined
+    static u32 getU32();
+    static f32 getF32();
 
 private:
-    inline RPUtlRandom() : mSeed(NULL) {}
+    RPUtlRandom() : mSeed(0) {}
+    ~RPUtlRandom() {}
+
+    static u32 calc();
+
+private:
     u32 mSeed; // at 804bf688
 
-    static RPUtlRandom* mInstance;
-    static RPUtlRandom* getInstance();
+    static constexpr u32 SEED_STEP = 69069;
 };
