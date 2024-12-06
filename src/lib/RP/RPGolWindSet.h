@@ -19,15 +19,15 @@ class RPGolWindSet
 public:
     RPGolWindSet() : mWinds() {}
 
-    Wind& operator[](int i) { return mWinds[i]; }
+    Wind &operator[](int i) { return mWinds[i]; }
 
-    Score_t scoreAgainst(const RPGolWindSet&) const;
-    void toString(char *buf, const char* setStartDelim = "{", const char* setEndDelim = "}",
-        const char* termStartDelim = "", const char* termEndDelim = ", ", bool bCloseEndDelim = false) const;
+    Score_t scoreAgainst(const RPGolWindSet &) const;
+    void toString(char *buf, const char *setStartDelim = "{", const char *setEndDelim = "}",
+                  const char *termStartDelim = "", const char *termEndDelim = ", ", bool bCloseEndDelim = false) const;
 
-private:
     Wind mWinds[RPGolDefine::HOLE_SIZE];
 
+private:
     static constexpr Score_t scoreBase = 8;
     static constexpr Score_t perfectScore = (scoreBase * 2) * RPGolDefine::HOLE_SIZE;
 };

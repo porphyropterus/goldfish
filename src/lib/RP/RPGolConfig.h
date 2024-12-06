@@ -10,8 +10,14 @@ class RPGolWindSet;
 class RPGolConfig
 {
 public:
-    static void MakeRandomSequence(s32 max, s32* pArray); // at 8029dea8
-    static void MakeWindSet(const RPGolDifficulty& diff, RPGolWindSet& out); // based on 8029dcf4
+    static void MakeRandomSequence(s32 max, s32 *pArray);                    // at 8029dea8
+    static void MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out); // based on 8029dcf4
+
+    static RPGolConfig *getInstance()
+    {
+        static RPGolConfig instance;
+        return &instance;
+    }
 
 private:
     RPGolConfig() {}

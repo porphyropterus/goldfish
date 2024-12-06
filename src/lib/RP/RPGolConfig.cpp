@@ -5,13 +5,13 @@
 #include "RPUtlRandom.h"
 
 /// <summary>
-/// Generates a random sequence of numbers 
+/// Generates a random sequence of numbers
 /// between 0-max (exclusive), with no duplicates.
 /// (This uses the original algorithm from Wii Sports.)
 /// </summary>
 /// <param name="max">Upper limit of sequence</param>
 /// <param name="pArray">Pointer to array to fill</param>
-void RPGolConfig::MakeRandomSequence(s32 max, s32* pArray)
+void RPGolConfig::MakeRandomSequence(s32 max, s32 *pArray)
 {
     for (s32 i = 0; i < max; i++)
         pArray[i] = -max;
@@ -30,11 +30,13 @@ void RPGolConfig::MakeRandomSequence(s32 max, s32* pArray)
                     pArray[j] += max;
                     pArray[slotsFilled++] += j;
 
-                    if (slotsFilled >= max) return;
-                    
+                    if (slotsFilled >= max)
+                        return;
+
                     break;
                 }
-                else j++;
+                else
+                    j++;
             }
         }
     }
@@ -45,16 +47,16 @@ void RPGolConfig::MakeRandomSequence(s32 max, s32* pArray)
 /// to represent the "wind set" for the current game.
 /// (This uses the original algorithm from Wii Sports.)
 /// </summary>
-void RPGolConfig::MakeWindSet(const RPGolDifficulty& diff, RPGolWindSet& out)
+void RPGolConfig::MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out)
 {
     // Simulate all random number generations before wind is generated
     RPUtlRandom::advance(CALC_BEFORE_WIND);
 
     // Generate random sequences
     // (speed/dir, values this function will hand-pick from)
-    s32 randomDirs[RPGolDefine::MAX_WIND_DIV];
+    s32 randomDirs[RPGolDefine::MAX_WIND_DIR];
     s32 randomSpeeds[RPGolDefine::MAX_WIND_SPD];
-    MakeRandomSequence(RPGolDefine::MAX_WIND_DIV, randomDirs);
+    MakeRandomSequence(RPGolDefine::MAX_WIND_DIR, randomDirs);
     MakeRandomSequence(RPGolDefine::MAX_WIND_SPD, randomSpeeds);
 
     // Round length (in holes)
@@ -75,7 +77,7 @@ void RPGolConfig::MakeWindSet(const RPGolDifficulty& diff, RPGolWindSet& out)
         {
             // If it won't, use dummy wind (32 mph S)
             // Setting the direction to 8 looks like a bug but it seems the game takes it modulo 8 later
-            out[i].mDirection = RPGolDefine::MAX_WIND_DIV;
+            out[i].mDirection = RPGolDefine::MAX_WIND_DIR;
             out[i].mSpeed = RPGolDefine::MAX_WIND_SPD;
         }
         else
@@ -96,7 +98,8 @@ void RPGolConfig::MakeWindSet(const RPGolDifficulty& diff, RPGolWindSet& out)
                 // Assign random wind direction
                 out[i].mDirection = randomDirs[randomDirsIdx];
 
-                if (nextSpd <= 0) continue;
+                if (nextSpd <= 0)
+                    continue;
                 numNonzeroWinds++;
                 randomDirsIdx++;
             }

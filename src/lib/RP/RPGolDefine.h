@@ -18,7 +18,7 @@ namespace RPGolDefine
         /* 0x0005 */ NORTHWEST,
         /* 0x0006 */ WEST,
         /* 0x0007 */ SOUTHWEST,
-        /* 0x0008 */ MAX_WIND_DIV,
+        /* 0x0008 */ MAX_WIND_DIR,
 
         // For command-line use
         /* 0x0009 */ WILDCARD_DIR
@@ -59,11 +59,12 @@ namespace RPGolDefine
     /// </summary>
     /// <param name="s">Direction string</param>
     /// <returns>WindDir enum value</returns>
-    static u32 StringToDir(const char* dir)
+    static u32 StringToDir(const char *dir)
     {
         // String should be at most 2 chars long
         u32 len = std::strlen(dir);
-        if (len > 2) return MAX_WIND_DIV;
+        if (len > 2)
+            return MAX_WIND_DIR;
 
         switch (len)
         {
@@ -81,33 +82,37 @@ namespace RPGolDefine
             case '*':
                 return WILDCARD_DIR;
             default:
-                return MAX_WIND_DIV;
+                return MAX_WIND_DIR;
             }
 
         case 2:
-            if (_stricmp(dir, "NE") == 0) return NORTHEAST;
-            if (_stricmp(dir, "NW") == 0) return NORTHWEST;
-            if (_stricmp(dir, "SE") == 0) return SOUTHEAST;
-            if (_stricmp(dir, "SW") == 0) return SOUTHWEST;
-            return MAX_WIND_DIV;
+            if (_stricmp(dir, "NE") == 0)
+                return NORTHEAST;
+            if (_stricmp(dir, "NW") == 0)
+                return NORTHWEST;
+            if (_stricmp(dir, "SE") == 0)
+                return SOUTHEAST;
+            if (_stricmp(dir, "SW") == 0)
+                return SOUTHWEST;
+            return MAX_WIND_DIR;
         }
 
-        return MAX_WIND_DIV;
+        return MAX_WIND_DIR;
     }
 
-    static const char* DirToString(u32 dir)
+    static const char *DirToString(u32 dir)
     {
-        if (dir == WILDCARD_DIR) return "*";
+        if (dir == WILDCARD_DIR)
+            return "*";
 
-        if (dir >= MAX_WIND_DIV)
+        if (dir >= MAX_WIND_DIR)
         {
             assert(false && "Invalid wind direction!");
             return "INVALID";
         }
 
-        constexpr const char* windDirStrings[] = {
-            "S", "SE", "E", "NE", "N", "NW", "W", "SW"
-        };
+        constexpr const char *windDirStrings[] = {
+            "S", "SE", "E", "NE", "N", "NW", "W", "SW"};
 
         return windDirStrings[dir];
     }

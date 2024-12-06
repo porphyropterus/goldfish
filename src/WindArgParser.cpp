@@ -1,5 +1,5 @@
 #include "WindArgParser.h"
-#include <lib/RP/RPGolConfig.h>
+#include "lib/RP/RPGolConfig.h"
 #include <string>
 #include <cassert>
 
@@ -9,17 +9,17 @@
 /// </summary>
 /// <param name="arg">Command-line argument</param>
 /// <param name="out">Output wind set</param>
-bool WindArgParser::parseTargetWindSet(const std::string& arg, RPGolWindSet& out)
+bool WindArgParser::parseTargetWindSet(const std::string &arg, RPGolWindSet &out)
 {
     //// Split the string by its commas
-    //u32 pos;
-    //std::string wind;
-    //for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
+    // u32 pos;
+    // std::string wind;
+    // for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
     //{
-    //    // Get substring of i'th wind
-    //    pos = arg.find(",");
-    //    if (!pos) return false;
-    //    wind = arg.substr(pos);
+    //     // Get substring of i'th wind
+    //     pos = arg.find(",");
+    //     if (!pos) return false;
+    //     wind = arg.substr(pos);
 
     //    std::string speed;
     //    std::string direction;

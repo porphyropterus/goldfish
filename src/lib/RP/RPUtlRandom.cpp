@@ -1,11 +1,11 @@
-#include <rvl/OSTime.h>
 #include "RPUtlRandom.h"
+#include "lib/rvl/OSTime.h"
 
 /// <summary>
 /// Initialize seed using OSCalendarTime object
 /// </summary>
 /// <param name="ctime">OSCalendarTime reference</param>
-void RPUtlRandom::initialize(const OSCalendarTime& ctime)
+void RPUtlRandom::initialize(const OSCalendarTime &ctime)
 {
     GetInstance()->mSeed = (ctime.min << 26 | ctime.sec << 20 | ctime.msec << 10 | ctime.usec);
 }
@@ -34,7 +34,8 @@ u32 RPUtlRandom::getSeed()
 /// <param name="n">Number of steps to advance</param>
 void RPUtlRandom::advance(u32 n)
 {
-    for (u32 i = 0; i < n; i++) calc();
+    for (u32 i = 0; i < n; i++)
+        calc();
 }
 
 /// <summary>
@@ -52,7 +53,7 @@ u32 RPUtlRandom::getU32()
 /// <returns>Random f32</returns>
 f32 RPUtlRandom::getF32()
 {
-    return (float)(getU32() / 0x10000);
+    return (float)getU32() / 0x10000;
 }
 
 /// <summary>
@@ -61,7 +62,7 @@ f32 RPUtlRandom::getF32()
 /// <returns>Seed after stepping forward one iteration</returns>
 u32 RPUtlRandom::calc()
 {
-    RPUtlRandom* rng = GetInstance();
+    RPUtlRandom *rng = GetInstance();
 
     // Linear congruential generator implementation
     // Old versions of glibc also use 69069 as the multiplier
