@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.mdx": "markdown",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "*.tcc": "cpp"
     }
 }

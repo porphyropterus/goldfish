@@ -1,7 +1,21 @@
 #include <cstdlib>
+#include <cmath>
 #include "RPGolWindSet.h"
 #include "RPGolDefine.h"
 #include "RPGolConfig.h"
+
+unsigned int RPGolWindSet::hashWithDepth(int depth)
+{
+    unsigned int hash = 0;
+
+    for (int i = 0; i < depth; i++)
+    {
+        unsigned int combined = (mWinds[i].mSpeed & 0xF) << 3 | (mWinds[i].mDirection & 0x7);
+        hash = (hash << 7) | combined;
+    }
+
+    return hash;
+}
 
 /// <summary>
 /// Score a wind set against a target, with the score representing how close
@@ -10,7 +24,7 @@
 /// </summary>
 /// <param name="target">Target wind set to score against</param>
 /// <returns></returns>
-Score_t RPGolWindSet::scoreAgainst(const RPGolWindSet& target) const
+Score_t RPGolWindSet::scoreAgainst(const RPGolWindSet &target) const
 {
     Score_t myScore = 0;
     for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
@@ -46,8 +60,8 @@ Score_t RPGolWindSet::scoreAgainst(const RPGolWindSet& target) const
 /// Custom delimiter support for things like CSV data analysis
 /// </summary>
 /// <returns>Wind set string</returns>
-void RPGolWindSet::toString(char *out, const char* setStartDelim, const char* setEndDelim,
-    const char* termStartDelim, const char* termEndDelim, bool bCloseEndDelim) const
+void RPGolWindSet::toString(char *out, const char *setStartDelim, const char *setEndDelim,
+                            const char *termStartDelim, const char *termEndDelim, bool bCloseEndDelim) const
 {
     // String buffer
     char buf[1024];

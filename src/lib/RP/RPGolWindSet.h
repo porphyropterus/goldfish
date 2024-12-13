@@ -21,6 +21,7 @@ public:
 
     Wind &operator[](int i) { return mWinds[i]; }
 
+    unsigned int hashWithDepth(int depth);
     Score_t scoreAgainst(const RPGolWindSet &) const;
     void toString(char *buf, const char *setStartDelim = "{", const char *setEndDelim = "}",
                   const char *termStartDelim = "", const char *termEndDelim = ", ", bool bCloseEndDelim = false) const;

@@ -355,3 +355,4 @@ MigrationBackup/
 *.exe
 /seeds
 /build
+/temp

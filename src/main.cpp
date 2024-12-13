@@ -2,12 +2,22 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <chrono>
+
+#include <vector>
+#include <unordered_map>
+
 #include "types.h"
 #include "lib/RP/RPUtlRandom.h"
 #include "lib/RP/RPGolConfig.h"
 #include "lib/RP/RPGolWindSet.h"
 #include "lib/RP/RPGolDifficulty.h"
 #include "lib/rvl/OSTime.h"
+
+#include "lib/SIMDCompressionAndIntersection/include/intersection.h"
+#include "lib/SIMDCompressionAndIntersection/include/codecfactory.h"
+
+using namespace SIMDCompressionLib;
 
 /// <summary>
 /// Finds Dolphin-usable seed with the closest wind set to the target.
@@ -94,15 +104,12 @@ bool tryToFindSeedFromWindSet(const RPGolWindSet &target, OSCalendarTime &out)
 void getWindSetFromSeed(u32 seed, RPGolWindSet &out)
 {
     RPUtlRandom::initialize(seed);
-
     RPGolConfig *pInstance = RPGolConfig::getInstance();
     pInstance->MakeWindSet(diff_Ninehole, out);
 }
 
 void createFolders(std::filesystem::path path, unsigned char depth, unsigned char speeds, unsigned char directions)
 {
-    // example: in og, we would create files like 15/7/14/6/13/5.bin
-
     for (u32 i = 0; i < speeds; i++)
     {
         std::filesystem::path inner_path = path / std::to_string(i);
@@ -129,7 +136,7 @@ void createFolders(std::filesystem::path path, unsigned char depth, unsigned cha
     }
 }
 
-void dumpWindSeedPrefixes(std::filesystem::path path, unsigned char depth = 1)
+void dumpWindSeedPrefixes(std::filesystem::path path, unsigned char depth = 2)
 {
     RPGolConfig *pInstance = RPGolConfig::getInstance();
     RPGolWindSet wind;
@@ -137,7 +144,7 @@ void dumpWindSeedPrefixes(std::filesystem::path path, unsigned char depth = 1)
     createFolders(path, depth, RPGolDefine::MAX_WIND_SPD, RPGolDefine::MAX_WIND_DIR);
 
     // for all seeds
-    for (u32 i = 0x123456; i < 0x123456 + 10; i++)
+    for (u32 i = 0x123456; i < 0x123456 + 1000000; i++)
     {
         // get that seed's wind
         getWindSetFromSeed(i, wind);
@@ -156,16 +163,106 @@ void dumpWindSeedPrefixes(std::filesystem::path path, unsigned char depth = 1)
 
         write_path += ".bin";
 
-        std::cout << write_path << std::endl;
-
         // append to this file
         std::ofstream file(write_path, std::ios::app | std::ios::binary);
         file.write(reinterpret_cast<const char *>(&i), sizeof(u32));
     }
 }
 
+class Generator
+{
+    class FileAndSeeds
+    {
+    public:
+        std::ofstream file;
+        std::vector<u32> seeds;
+    };
+
+    RPGolConfig *pInstance = RPGolConfig::getInstance();
+    RPGolWindSet wind;
+
+    std::unordered_map<u32, FileAndSeeds> hashToSeeds;
+
+    void generateWindSet(u32 seed)
+    {
+        RPUtlRandom::initialize(seed);
+        pInstance->MakeWindSet(diff_Ninehole, wind);
+    }
+
+    void addSeedToHashMap(u32 seed)
+    {
+        generateWindSet(seed);
+        u32 hash = wind.hashWithDepth(1);
+        hashToSeeds[hash].seeds.push_back(seed);
+    }
+
+public:
+    Generator()
+    {
+        // initialize hashmap
+        for (u32 i = 0; i < 1 << 7; i++)
+        {
+            hashToSeeds[i] = FileAndSeeds();
+            hashToSeeds[i].file.open(".\\temp\\" + std::to_string(i) + ".bin", std::ios::binary);
+        }
+    }
+
+    void dumpSeeds()
+    {
+        // create folder called temp
+        std::filesystem::create_directory(".\\temp");
+
+        u32 seed = 0x12340000;
+
+        for (u32 i = 0; i < 16; i++)
+        {
+            do
+            {
+                addSeedToHashMap(seed);
+            } while (++seed & 0xFFFF);
+
+            for (auto &pair : hashToSeeds)
+            {
+                if (!pair.second.seeds.empty())
+                {
+                    pair.second.file.write(reinterpret_cast<const char *>(pair.second.seeds.data()), pair.second.seeds.size() * sizeof(u32));
+                    pair.second.seeds.clear();
+                }
+            }
+            std::cout << i << "/16" << std::endl;
+        }
+    }
+};
+
 int main()
 {
-    dumpWindSeedPrefixes(".\\seeds");
+    // load temp/0.bin as a vector
+    std::ifstream file(".\\temp\\0.bin", std::ios::binary);
+
+    // Generator generator;
+    // auto start = std::chrono::high_resolution_clock::now();
+    // generator.dumpSeeds();
+    // auto end = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> elapsed = end - start;
+    // std::cout << "Time per seed: " << elapsed.count() / 0x100000 << "s" << std::endl;
+    // std::cout << "Time to dump 2^32 seeds: " << (elapsed.count()) * 298.261618 << "h" << std::endl;
+
+    // // open file as an int pointer and start reading it
+    // std::ifstream file(".\\seeds\\0\\1.bin", std::ios::binary);
+    // u32 seed;
+    // int count;
+    // RPGolWindSet wind;
+    // auto start = std::chrono::high_resolution_clock::now();
+    // while (file.read(reinterpret_cast<char *>(&seed), sizeof(u32)))
+    // {
+    //     count++;
+    //     std::cout << "Seed: " << seed << std::endl;
+    //     getWindSetFromSeed(seed, wind);
+    // }
+    // auto end = std::chrono::high_resolution_clock::now();
+
+    // std::cout << "Time per seed: " << std::chrono::duration<double>(end - start).count() / count << "s" << std::endl;
+    // std::cout << "Total time: " << std::chrono::duration<double>(end - start).count() << "s" << std::endl;
+
     return 0;
 }
