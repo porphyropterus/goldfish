@@ -86,13 +86,13 @@ namespace RPGolDefine
             }
 
         case 2:
-            if (_stricmp(dir, "NE") == 0)
+            if (strcmp(dir, "NE") == 0)
                 return NORTHEAST;
-            if (_stricmp(dir, "NW") == 0)
+            if (strcmp(dir, "NW") == 0)
                 return NORTHWEST;
-            if (_stricmp(dir, "SE") == 0)
+            if (strcmp(dir, "SE") == 0)
                 return SOUTHEAST;
-            if (_stricmp(dir, "SW") == 0)
+            if (strcmp(dir, "SW") == 0)
                 return SOUTHWEST;
             return MAX_WIND_DIR;
         }

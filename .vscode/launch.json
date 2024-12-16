@@ -5,7 +5,7 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/GolfAtHome.exe",
+            "program": "${workspaceFolder}/build/GolfAtHome",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -20,7 +20,7 @@
                 }
             ],
             "preLaunchTask": "CMake: build",
-            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
+            // "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
             "logging": {
                 "trace": true,
                 "traceResponse": true,
