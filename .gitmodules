@@ -1,3 +1,0 @@
-[submodule "src/lib/SIMDCompressionAndIntersection"]
-	path = src/lib/SIMDCompressionAndIntersection
-	url = https://github.com/lemire/SIMDCompressionAndIntersection
