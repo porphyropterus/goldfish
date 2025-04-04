@@ -356,3 +356,5 @@ MigrationBackup/
 /seeds
 /build
 /temp
+finder
+*.bin
