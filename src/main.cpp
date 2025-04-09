@@ -66,52 +66,52 @@ class Generator
 public:
     Generator()
     {
-        // initialize hashmap
-        for (u32 i = 0; i < 1 << 14; i++)
-        {
-            hashToSeeds[i] = FileAndSeeds();
-            hashToSeeds[i].file.open("./temp/" + std::to_string(i) + ".bin", std::ios::binary | std::ios::trunc);
-            if (!hashToSeeds[i].file)
-            {
-                std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
-                exit(1);
-            }
-        }
+        // // initialize hashmap
+        // for (u32 i = 0; i < 1 << 14; i++)
+        // {
+        //     hashToSeeds[i] = FileAndSeeds();
+        //     hashToSeeds[i].file.open("./temp/" + std::to_string(i) + ".bin", std::ios::binary | std::ios::trunc);
+        //     if (!hashToSeeds[i].file)
+        //     {
+        //         std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
+        //         exit(1);
+        //     }
+        // }
     }
 
     ~Generator()
     {
-        for (u32 i = 0; i < 1 << 14; i++)
-        {
-            hashToSeeds[i].file.close();
-        }
+        // for (u32 i = 0; i < 1 << 14; i++)
+        // {
+        //     hashToSeeds[i].file.close();
+        // }
     }
 
     void dumpSeeds()
     {
-        // create folder called temp
-        std::filesystem::create_directory("./temp");
+        // // create folder called temp
+        // std::filesystem::create_directory("./temp");
 
-        u32 seed = 0x00000000;
+        // u32 seed = 0x00000000;
 
-        for (u32 i = 0; i < 0x10000; i++)
-        {
-            do
-            {
-                addSeedToHashMap(seed);
-            } while (++seed & 0xFFFF);
+        // for (u32 i = 0; i < 0x10000; i++)
+        // {
+        //     do
+        //     {
+        //         addSeedToHashMap(seed);
+        //     } while (++seed & 0xFFFF);
 
-            for (u32 j = 0; j < 1 << 14; j++)
-            {
-                if (!hashToSeeds[j].seeds.empty())
-                {
-                    hashToSeeds[j].file.write(reinterpret_cast<const char *>(hashToSeeds[j].seeds.data()), hashToSeeds[j].seeds.size() * sizeof(u32));
-                    hashToSeeds[j].seeds.clear();
-                }
-            }
+        //     for (u32 j = 0; j < 1 << 14; j++)
+        //     {
+        //         if (!hashToSeeds[j].seeds.empty())
+        //         {
+        //             hashToSeeds[j].file.write(reinterpret_cast<const char *>(hashToSeeds[j].seeds.data()), hashToSeeds[j].seeds.size() * sizeof(u32));
+        //             hashToSeeds[j].seeds.clear();
+        //         }
+        //     }
 
-            std::cout << "0x" << std::hex << i << "/0x4000" << std::endl;
-        }
+        //     std::cout << "0x" << std::hex << i << "/0x4000" << std::endl;
+        // }
 
         // for all files in the temp folder
         // rewrite them so the most significant bits are first, then the 2nd most, etc.
@@ -141,24 +141,46 @@ public:
 
         int zlib_counter = 0;
 
-        for (int i = 0; i < 1 << 14; i++)
+        for (/*int i=0; i < 1<<14;*/ int i = 0; i < 1 << 14; i++)
         {
+
             seeds.clear();
             new_bytes.clear();
 
-            auto file = std::ifstream("./temp/" + std::to_string(i) + ".bin", std::ios::binary);
+            // read from ith file, put contents into seeds
+            std::ifstream file = std::ifstream("./temp/" + std::to_string(i) + ".bin", std::ios::binary);
 
-            while (file.read(reinterpret_cast<char *>(&read_seed), sizeof(u32)))
+            if (!file)
             {
-                seeds.push_back(read_seed);
+                std::cout << "Error: Could not open file " << std::to_string(i) << ".bin" << std::endl;
+            }
+            else
+            {
+                while (file.read(reinterpret_cast<char *>(&read_seed), sizeof(u32)))
+                {
+                    seeds.push_back(read_seed);
+                }
             }
 
             // DELTA ENCODING -> MSB->LSB -> GZIP: WORSE THAN JUST MSB->LSB -> GZIP
-            for (u32 i = 1; i < seeds.size(); i++)
+
+            // delta encode the seeds
+            if (seeds.size() > 1)
             {
-                seeds[i] -= seeds[i - 1] - 1;
+                for (u32 i = seeds.size() - 1; i > 0; i--)
+                {
+                    seeds[i] -= seeds[i - 1];
+                }
             }
 
+            // add size to beginning of the new bytes
+            u32 size = seeds.size();
+            for (int i = 0; i < 4; ++i)
+            {
+                new_bytes.push_back((size >> (8 * i)) & 0xFF);
+            }
+
+            // convert the seeds to msb -> lsb
             for (u32 byte_index = 0; byte_index < 4; ++byte_index)
             {
                 for (const auto &seed : seeds)
@@ -168,21 +190,19 @@ public:
                 }
             }
 
-            // add size to beginning of the new bytes
-            u32 size = seeds.size();
-            for (int i = 0; i < 4; ++i)
-            {
-                new_bytes.insert(new_bytes.begin(), (size >> (8 * i)) & 0xFF);
-            }
+            // close input file
+            file.close();
+            // i can delete the temp file now
+            std::filesystem::remove("./temp/" + std::to_string(i) + ".bin");
 
-            // compress the data
+            // compress the new bytes
             std::vector<u8> compressedData;
             compressData(new_bytes, compressedData);
             // write the compressed data to the file
             output_file.write(reinterpret_cast<const char *>(compressedData.data()), compressedData.size());
 
             // determine next offset
-            if (i != 1 << 14 - 1)
+            if (i != (1 << 14) - 1)
                 offsets[i + 1] = offsets[i] + compressedData.size() - sizeof(u64);
 
             if (i % 0x100 == 0)

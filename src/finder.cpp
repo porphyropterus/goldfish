@@ -61,7 +61,9 @@ int main(int argc, char *argv[])
 
     for (const auto &hash : hashes)
     {
-        if (hash > 0x7F)
+        std::cout << "Hash: " << std::to_string(hash) << std::endl;
+
+        if (hash > 1 << 14)
         {
             continue;
         }
@@ -69,13 +71,11 @@ int main(int argc, char *argv[])
         // hash number of u64s + 1 u32 for number of offsets
         file.seekg(hash * sizeof(u64) + sizeof(u32), std::ios::beg);
 
-        // seek hash offsets ahead
-        // file.seekg(sizeof(u64) * 0, std::ios::cur);
         // read the offset
         u64 offset;
         file.read(reinterpret_cast<char *>(&offset), sizeof(u64));
 
-        // std::cout << "Offset: " << std::hex << offset << std::endl;
+        std::cout << "Offset: " << std::hex << offset << std::endl;
 
         // read the next offset to determine the size of the data
         u64 next_offset;
@@ -91,8 +91,6 @@ int main(int argc, char *argv[])
         }
         u64 size = difference - sizeof(u64);
 
-        // get the next offset to determine the next size
-        // print offset
         // std::cout << "Size: " << size << std::endl;
 
         // seek offset amount of bytes ahead
@@ -102,7 +100,7 @@ int main(int argc, char *argv[])
         std::vector<u8> compressedData(size);
         file.read(reinterpret_cast<char *>(compressedData.data()), size);
 
-        // for (size_t i = 0; i < compressedData.size(); ++i)
+        // for (size_t i = 0; i < 10; ++i)
         // {
         //     std::cout << std::hex << static_cast<int>(compressedData[i]) << " ";
         // }
@@ -111,11 +109,11 @@ int main(int argc, char *argv[])
         std::vector<u8> decompressedData;
         decompressData(compressedData, decompressedData);
 
-        // for (size_t i = 0; i < decompressedData.size(); ++i)
-        // {
-        //     std::cout << std::hex << static_cast<int>(decompressedData[i]) << " ";
-        // }
-        // std::cout << std::endl;
+        for (size_t i = 0; i < 10; ++i)
+        {
+            std::cout << std::hex << static_cast<int>(decompressedData[i]) << " ";
+        }
+        std::cout << std::endl;
 
         // construct seeds array
 
@@ -123,7 +121,7 @@ int main(int argc, char *argv[])
         u32 seeds_size = 0;
         for (int i = 0; i < 4; ++i)
         {
-            seeds_size |= (decompressedData[i] << (8 * (3 - i)));
+            seeds_size |= (decompressedData[i] << (8 * i));
         }
 
         // std::cout << "Seeds size: " << seeds_size << std::endl;
@@ -139,12 +137,18 @@ int main(int argc, char *argv[])
             {
                 seeds[j] |= (decompressedData[read_pos] << (8 * (3 - i)));
                 read_pos++;
-                // if (i == 3 && j < 10)
-                // {
-                //     std::cout << "Seed[" << std::setw(2) << std::setfill('0') << j << "]: 0x"
-                //               << std::hex << std::setw(8) << std::setfill('0') << seeds[j] << std::endl;
-                // }
+                if (i == 3 && j < 10)
+                {
+                    // std::cout << "Seed[" << std::setw(2) << std::setfill('0') << j << "]: 0x"
+                    //           << std::hex << std::setw(8) << std::setfill('0') << seeds[j] << std::endl;
+                }
             }
+        }
+
+        // un-delta encode the seeds
+        for (u32 i = 1; i < seeds.size(); i++)
+        {
+            seeds[i] += seeds[i - 1];
         }
 
         for (int i = 0; i < seeds.size(); i++)

@@ -358,3 +358,5 @@ MigrationBackup/
 /temp
 finder
 *.bin
+perf.data
+perf.data.*
