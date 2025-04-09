@@ -59,24 +59,29 @@ class Generator
     void addSeedToHashMap(u32 seed)
     {
         generateWindSet(seed);
-        u32 hash = wind.hashWithDepth(1);
-        hashToSeeds[hash].seeds.push_back(seed);
+        std::vector<u32> hash = wind.hashesWithDepth(2);
+        hashToSeeds[hash[0]].seeds.push_back(seed);
     }
 
 public:
     Generator()
     {
         // initialize hashmap
-        for (u32 i = 0; i < 1 << 7; i++)
+        for (u32 i = 0; i < 1 << 14; i++)
         {
             hashToSeeds[i] = FileAndSeeds();
-            hashToSeeds[i].file.open("./temp/" + std::to_string(i) + ".bin", std::ios::binary);
+            hashToSeeds[i].file.open("./temp/" + std::to_string(i) + ".bin", std::ios::binary | std::ios::trunc);
+            if (!hashToSeeds[i].file)
+            {
+                std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
+                exit(1);
+            }
         }
     }
 
     ~Generator()
     {
-        for (u32 i = 0; i < 1 << 7; i++)
+        for (u32 i = 0; i < 1 << 14; i++)
         {
             hashToSeeds[i].file.close();
         }
@@ -89,14 +94,14 @@ public:
 
         u32 seed = 0x00000000;
 
-        for (u32 i = 0; i < 0x8; i++)
+        for (u32 i = 0; i < 0x10000; i++)
         {
             do
             {
                 addSeedToHashMap(seed);
             } while (++seed & 0xFFFF);
 
-            for (u32 j = 0; j < 1 << 7; j++)
+            for (u32 j = 0; j < 1 << 14; j++)
             {
                 if (!hashToSeeds[j].seeds.empty())
                 {
@@ -119,22 +124,24 @@ public:
 
         // stores number of bytes forward you would need to go to get the corresponding hash
         // fill with 0s for now
-        std::vector<u64> offsets(1 << 7, 0);
-        // except for the first offset would be 1 << 7 * sizeof(u64)
-        offsets[0] = (1 << 7) * sizeof(u64);
+        std::vector<u64> offsets(1 << 14, 0);
+        // except for the first offset would be 1 << 14 * sizeof(u64)
+        offsets[0] = (1 << 14) * sizeof(u64);
 
         // write the number of offsets to the file
 
-        u32 numOffsets = 1 << 7;
+        u32 numOffsets = 1 << 14;
         output_file.write(reinterpret_cast<const char *>(&numOffsets), sizeof(u32));
 
         // write placeholder offsets to the file
-        for (u32 i = 0; i < 1 << 7; i++)
+        for (u32 i = 0; i < 1 << 14; i++)
         {
             output_file.write(reinterpret_cast<const char *>(&offsets[i]), sizeof(u64));
         }
 
-        for (int i = 0; i < 1 << 7; i++)
+        int zlib_counter = 0;
+
+        for (int i = 0; i < 1 << 14; i++)
         {
             seeds.clear();
             new_bytes.clear();
@@ -175,8 +182,14 @@ public:
             output_file.write(reinterpret_cast<const char *>(compressedData.data()), compressedData.size());
 
             // determine next offset
-            if (i != 1 << 7 - 1)
+            if (i != 1 << 14 - 1)
                 offsets[i + 1] = offsets[i] + compressedData.size() - sizeof(u64);
+
+            if (i % 0x100 == 0)
+            {
+                zlib_counter++;
+                std::cout << "0x" << std::hex << zlib_counter << "/0x2000" << std::endl;
+            }
         }
 
         // write actual offsets to the file
@@ -192,7 +205,16 @@ int main()
     generator.dumpSeeds();
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
-    std::cout << "Time per seed: " << elapsed.count() / (8 * 65536) << "s" << std::endl;
+    std::cout << "Time per seed: " << elapsed.count() / (0x800 * 65536) << "s" << std::endl;
+
+    // RPGolWindSet wind;
+
+    // RPGolConfig *pInstance = RPGolConfig::getInstance();
+    // pInstance->MakeWindSet(diff_Ninehole, wind);
+
+    // char buf[256];
+    // wind.toString(buf, "{", "}", "[", "]", true);
+    // std::cout << buf << std::endl;
 
     // // open file as an int pointer and start reading it
     // std::ifstream file("./seeds/0/1.bin", std::ios::binary);

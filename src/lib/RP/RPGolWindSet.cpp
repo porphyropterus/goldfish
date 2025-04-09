@@ -1,20 +1,68 @@
 #include <cstdlib>
 #include <cmath>
+#include <vector>
+#include <functional>
+
 #include "RPGolWindSet.h"
 #include "RPGolDefine.h"
 #include "RPGolConfig.h"
 
-unsigned int RPGolWindSet::hashWithDepth(int depth)
+std::vector<unsigned int> RPGolWindSet::hashesWithDepth(int depth) const
 {
-    unsigned int hash = 0;
+    std::vector<unsigned int> hashes;
 
-    for (int i = 0; i < depth; i++)
+    // recursive function to generate hashes
+    std::function<void(int, unsigned int)> generateHashes = [&](int index, unsigned int hash)
     {
-        unsigned int combined = (mWinds[i].mSpeed & 0xF) << 3 | (mWinds[i].mDirection & 0x7);
-        hash = (hash << 7) | combined;
-    }
+        if (index == depth)
+        {
+            hashes.push_back(hash);
+            return;
+        }
 
-    return hash;
+        std::vector<u32> possibleDirections;
+        std::vector<s32> possibleSpeeds;
+
+        // if direction is wildcard, add all possible directions
+        if (mWinds[index].mDirection == RPGolDefine::WILDCARD_DIR)
+        {
+            for (u32 i = 0; i < RPGolDefine::MAX_WIND_DIR; i++)
+            {
+                possibleDirections.push_back(i);
+            }
+        }
+        else
+        {
+            possibleDirections.push_back(mWinds[index].mDirection);
+        }
+
+        // if speed is wildcard, add all possible speeds
+        if (mWinds[index].mSpeed == RPGolDefine::WILDCARD_SPD)
+        {
+            for (s32 i = 0; i < RPGolDefine::MAX_WIND_SPD; i++)
+            {
+                possibleSpeeds.push_back(i);
+            }
+        }
+        else
+        {
+            possibleSpeeds.push_back(mWinds[index].mSpeed);
+        }
+
+        // recursively call for each combination of direction and speed
+        for (const auto &direction : possibleDirections)
+        {
+            for (const auto &speed : possibleSpeeds)
+            {
+                unsigned int combined = (speed & 0xF) << 3 | (direction & 0x7);
+                unsigned int newHash = (hash << 7) | combined;
+                generateHashes(index + 1, newHash);
+            }
+        }
+    };
+
+    generateHashes(0, 0);
+    return hashes;
 }
 
 /// <summary>
@@ -64,7 +112,7 @@ void RPGolWindSet::toString(char *out, const char *setStartDelim, const char *se
                             const char *termStartDelim, const char *termEndDelim, bool bCloseEndDelim) const
 {
     // String buffer
-    char buf[1024];
+    char buf[1024] = {0};
 
     // Insert set start delimiter
     std::strcat(buf, setStartDelim);
