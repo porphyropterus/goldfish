@@ -173,21 +173,21 @@ void AbstractPrecomputeGenerator::generateFinalFileFromTempFiles(const std::stri
 
         if (!file)
         {
-            std::cout << "Error: Could not open file " << std::to_string(i) << ".bin" << std::endl;
+            // std::cout << "Error: Could not open file " << std::to_string(i) << ".bin" << std::endl;
         }
         else
         {
             while (file.read(reinterpret_cast<char *>(&read_seed), sizeof(u32)))
             {
-                std::cout << "Read seed: " << std::dec << read_seed << std::endl;
+                // std::cout << "Read seed: " << std::dec << read_seed << std::endl;
                 seeds.push_back(read_seed);
             }
         }
 
-        if (seeds.size() > 0)
-        {
-            std::cout << "Seeds size: " << seeds.size() << std::endl;
-        }
+        // if (seeds.size() > 0)
+        //{
+        //     std::cout << "Seeds size: " << seeds.size() << std::endl;
+        // }
 
         // sort the seeds
         std::sort(seeds.begin(), seeds.end());
@@ -219,13 +219,13 @@ void AbstractPrecomputeGenerator::generateFinalFileFromTempFiles(const std::stri
             }
         }
 
-        if (new_bytes.size() > 4)
-            std::cout << "New bytes size: " << new_bytes.size() << std::endl;
+        // if (new_bytes.size() > 4)
+        //     std::cout << "New bytes size: " << new_bytes.size() << std::endl;
 
         // // close input file
         file.close();
         // // i can delete the temp file now
-        std::filesystem::remove("./temp/" + std::to_string(i) + ".bin");
+        // std::filesystem::remove("./temp/" + std::to_string(i) + ".bin");
 
         // compress the new bytes
         std::vector<u8> compressedData;
