@@ -7,9 +7,17 @@ project(GolfAtHome)
 set(CMAKE_CXX_STANDARD 17)
 
 # Add the executable
-add_executable(GolfAtHome 
+add_executable(generator 
     src/generators/main.cpp 
     src/generators/AbstractPrecomputeGenerator.cpp
+    src/lib/RP/RPUtlRandom.cpp 
+    src/lib/RP/RPGolConfig.cpp 
+    src/lib/RP/RPGolWindSet.cpp
+)
+
+add_executable(finder
+    src/finder.cpp
+    src/WindArgParser.cpp
     src/lib/RP/RPUtlRandom.cpp 
     src/lib/RP/RPGolConfig.cpp 
     src/lib/RP/RPGolWindSet.cpp
@@ -27,5 +35,6 @@ include_directories(${PROJECT_SOURCE_DIR}/src/lib)
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
-    target_link_libraries(GolfAtHome ${ZLIB_LIBRARIES})
+    target_link_libraries(generator ${ZLIB_LIBRARIES})
+    target_link_libraries(finder ${ZLIB_LIBRARIES})
 endif()
