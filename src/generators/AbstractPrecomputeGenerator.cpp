@@ -54,17 +54,20 @@ void AbstractPrecomputeGenerator::generateTempFiles()
         std::filesystem::create_directory("./temp");
     }
 
-    // initialize hashmap
     for (u32 i = 0; i < numTempFiles; i++)
     {
         hashToSeeds[i] = TempFileAndSeeds();
         std::string filename = "./temp/" + std::to_string(i) + ".bin";
-        // if file exists, clear it; otherwise, create it
         hashToSeeds[i].file.open(filename, std::ios::binary | std::ios::trunc);
         if (!hashToSeeds[i].file)
         {
             std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
             exit(1);
+        }
+
+        if (i % 0x10000 == 0)
+        {
+            std::cout << "0x" << std::hex << i << "/0x" << numTempFiles << std::endl;
         }
     }
 }
@@ -73,9 +76,9 @@ void AbstractPrecomputeGenerator::fillTempFiles()
 {
     std::cout << "Filling temp files" << std::endl;
 
-    for (u32 i = 0; i < 0x8; i++)
+    for (u32 i = 0; i < 0x1000; i++)
     {
-        for (u32 j = 0; j < 0x10000; j++)
+        for (u32 j = 0; j < 0x100000; j++)
         {
             // add seed to corresponding file
             // std::cout << seedToHash(currentSeed) << " for seed: " << currentSeed << std::endl;
@@ -212,7 +215,7 @@ void AbstractPrecomputeGenerator::generateFinalFileFromTempFiles(const std::stri
         // // close input file
         file.close();
         // // i can delete the temp file now
-        // std::filesystem::remove("./temp/" + std::to_string(i) + ".bin");
+        std::filesystem::remove("./temp/" + std::to_string(i) + ".bin");
 
         // compress the new bytes
         std::vector<u8> compressedData;
