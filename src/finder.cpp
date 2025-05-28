@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     }
 
     // get possible hashes for this wind set
-    std::vector<u32> hashes = wind.hashesWithDepth(2);
+    std::vector<u32> hashes = wind.hashesWithDepth(3);
 
     // std::cout << "Hashes: ";
     // for (const auto &h : hashes)
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     {
         // std::cout << "Hash: " << std::to_string(hash) << std::endl;
 
-        if (hash > 1 << 14)
+        if (hash > 1 << 21)
         {
             continue;
         }
