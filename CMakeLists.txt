@@ -8,7 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Add the executable
 add_executable(GolfAtHome 
-    src/main.cpp 
+    src/generators/main.cpp 
+    src/generators/AbstractPrecomputeGenerator.cpp
     src/lib/RP/RPUtlRandom.cpp 
     src/lib/RP/RPGolConfig.cpp 
     src/lib/RP/RPGolWindSet.cpp

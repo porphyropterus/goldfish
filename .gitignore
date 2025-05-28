@@ -360,3 +360,33 @@ finder
 *.bin
 perf.data
 perf.data.*
+
+CMakeFiles
+
+# Common build directories
+/build/
+/build*/
+/out/
+/cmake-build-*/
+
+# CMake-specific files
+CMakeCache.txt
+cmake_install.cmake
+*.cmake
+*.vcxproj
+*.sln
+*.db
+*.log
+*.filters
+
+# CLion files
+.idea/
+
+# Visual Studio files
+.vs/
+
+# macOS files
+.DS_Store
+
+# Other files
+*.pyc

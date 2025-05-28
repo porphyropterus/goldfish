@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <iomanip>
-#include "zlib.h"
 
 #include "WindArgParser.h"
 #include "lib/RP/RPGolConfig.h"
@@ -11,19 +10,7 @@
 
 #include "types.h"
 
-void decompressData(const std::vector<u8> &compressedData, std::vector<u8> &decompressedData)
-{
-    uLongf decompressedSize = compressedData.size() * 4; // Initial guess for decompressed size
-    decompressedData.resize(decompressedSize);
-
-    while (uncompress(decompressedData.data(), &decompressedSize, compressedData.data(), compressedData.size()) == Z_BUF_ERROR)
-    {
-        decompressedSize *= 2; // Double the size and try again
-        decompressedData.resize(decompressedSize);
-    }
-
-    decompressedData.resize(decompressedSize);
-}
+#include "util_zlib.h"
 
 int main(int argc, char *argv[])
 {
@@ -56,12 +43,19 @@ int main(int argc, char *argv[])
     // get possible hashes for this wind set
     std::vector<u32> hashes = wind.hashesWithDepth(2);
 
+    // std::cout << "Hashes: ";
+    // for (const auto &h : hashes)
+    // {
+    //     std::cout << h << " ";
+    // }
+    // std::cout << std::endl;
+
     // used later
     RPGolWindSet seedWind;
 
     for (const auto &hash : hashes)
     {
-        std::cout << "Hash: " << std::to_string(hash) << std::endl;
+        // std::cout << "Hash: " << std::to_string(hash) << std::endl;
 
         if (hash > 1 << 14)
         {
@@ -75,7 +69,7 @@ int main(int argc, char *argv[])
         u64 offset;
         file.read(reinterpret_cast<char *>(&offset), sizeof(u64));
 
-        std::cout << "Offset: " << std::hex << offset << std::endl;
+        // std::cout << "Offset: " << std::hex << offset << std::endl;
 
         // read the next offset to determine the size of the data
         u64 next_offset;
@@ -109,11 +103,11 @@ int main(int argc, char *argv[])
         std::vector<u8> decompressedData;
         decompressData(compressedData, decompressedData);
 
-        for (size_t i = 0; i < 10; ++i)
-        {
-            std::cout << std::hex << static_cast<int>(decompressedData[i]) << " ";
-        }
-        std::cout << std::endl;
+        // for (size_t i = 0; i < 10; ++i)
+        // {
+        //     std::cout << std::hex << static_cast<int>(decompressedData[i]) << " ";
+        // }
+        // std::cout << std::endl;
 
         // construct seeds array
 
