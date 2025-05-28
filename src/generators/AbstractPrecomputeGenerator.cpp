@@ -57,13 +57,13 @@ void AbstractPrecomputeGenerator::generateTempFiles()
     for (u32 i = 0; i < numTempFiles; i++)
     {
         hashToSeeds[i] = TempFileAndSeeds();
-        std::string filename = "./temp/" + std::to_string(i) + ".bin";
-        hashToSeeds[i].file.open(filename, std::ios::binary | std::ios::trunc);
-        if (!hashToSeeds[i].file)
-        {
-            std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
-            exit(1);
-        }
+        // std::string filename = "./temp/" + std::to_string(i) + ".bin";
+        // hashToSeeds[i].file.open(filename, std::ios::binary | std::ios::trunc);
+        // if (!hashToSeeds[i].file)
+        // {
+        //     std::cerr << "Error: Could not open file " << i << ".bin" << std::endl;
+        //     exit(1);
+        // }
 
         if (i % 0x10000 == 0)
         {
@@ -76,28 +76,38 @@ void AbstractPrecomputeGenerator::fillTempFiles()
 {
     std::cout << "Filling temp files" << std::endl;
 
-    for (u32 i = 0; i < 0x1000; i++)
+    for (u32 i = 0; i < 0x10; i++)
     {
-        for (u32 j = 0; j < 0x100000; j++)
+        for (u32 j = 0; j < 0x10000000; j++)
         {
-            // add seed to corresponding file
-            // std::cout << seedToHash(currentSeed) << " for seed: " << currentSeed << std::endl;
             hashToSeeds[seedToHash(currentSeed)].seeds.push_back(currentSeed);
             currentSeed = nextSeed(currentSeed);
+
+            if (j % 0x10000 == 0)
+            {
+                std::cout << "0x" << std::hex << (i * 0x10000000 + j) / 0x10000 << "/0x10000" << std::endl;
+            }
         }
 
         // write to files
+        std::cout << "Writing to temp files" << std::endl;
         for (u32 h = 0; h < numTempFiles; h++)
         {
             if (!hashToSeeds[h].seeds.empty())
             {
+                hashToSeeds[h].file.open("./temp/" + std::to_string(h) + ".bin", std::ios::binary | std::ios::app);
                 hashToSeeds[h].file.write(reinterpret_cast<const char *>(hashToSeeds[h].seeds.data()), hashToSeeds[h].seeds.size() * sizeof(u32));
+                hashToSeeds[h].file.close();
                 hashToSeeds[h].seeds.clear();
+            }
+
+            if (h % 0x1000 == 0)
+            {
+                std::cout << "0x" << std::hex << h << "/0x" << numTempFiles << std::endl;
             }
         }
 
-        std::cout << "0x" << std::hex << i << "/0x10" << std::endl;
-        // close all files
+        std::cout << "0x" << std::hex << i << "/0x1000" << std::endl;
     }
 
     std::cout << "closing temp files" << std::endl;
