@@ -9,11 +9,6 @@
 #include <algorithm>
 
 #include "types.h"
-#include "lib/RP/RPUtlRandom.h"
-#include "lib/RP/RPGolConfig.h"
-#include "lib/RP/RPGolWindSet.h"
-#include "lib/RP/RPGolDifficulty.h"
-#include "lib/rvl/OSTime.h"
 
 #include "util_zlib.h"
 

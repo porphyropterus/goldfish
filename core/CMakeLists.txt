@@ -16,7 +16,7 @@ add_executable(generator
 )
 
 add_executable(finder
-    src/finder.cpp
+    src/finders/main.cpp
     src/WindArgParser.cpp
     src/lib/RP/RPUtlRandom.cpp 
     src/lib/RP/RPGolConfig.cpp 
