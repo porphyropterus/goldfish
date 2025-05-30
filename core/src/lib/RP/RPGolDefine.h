@@ -20,7 +20,6 @@ namespace RPGolDefine
         /* 0x0007 */ SOUTHWEST,
         /* 0x0008 */ MAX_WIND_DIR,
 
-        // For command-line use
         /* 0x0009 */ WILDCARD_DIR
     };
 
@@ -28,7 +27,6 @@ namespace RPGolDefine
     {
         /* 0x000F */ MAX_WIND_SPD = 16,
 
-        // For command-line use
         /* 0x0010 */ WILDCARD_SPD = 17
     };
 

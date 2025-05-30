@@ -3,6 +3,7 @@
 #ifndef RP_SPORTS_GOL_WIND_SET_H
 #define RP_SPORTS_GOL_WIND_SET_H
 #include "types.h"
+
 #include "lib/RP/RPGolDefine.h"
 
 #include <string>
