@@ -94,7 +94,7 @@ public:
             }
 
             // un-delta encode the seeds
-            for (u32 i = 1; i < seeds.size(); i++)
+            for (u32 i = 1; i < thisHashSeeds.size(); i++)
             {
                 thisHashSeeds[i] += thisHashSeeds[i - 1];
             }
@@ -113,7 +113,7 @@ public:
 
         std::vector<TOutput> results;
 
-        for (u32 seed : hashes)
+        for (u32 seed : seeds)
         {
             TOutput output = generatePotentialOutputFromSeed(seed);
             if (doesPotentialOutputMatchInput(output, input))

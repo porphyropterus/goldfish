@@ -23,10 +23,11 @@ int main(int argc, char *argv[])
     OgWindFinder finder(filePath);
     auto results = finder.find(windSet);
 
+    char buffer[1024] = {0};
+
     for (const auto &result : results)
     {
         std::cout << "Seed: 0x" << std::hex << result.seed << std::endl;
-        char buffer[1024] = {0};
         result.windSet.toString(buffer);
         std::cout << "Wind: " << buffer << "\n\n";
     }
