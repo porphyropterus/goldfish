@@ -86,7 +86,7 @@ public:
 
             for (int i = 0; i < 4; i++)
             {
-                for (int j = 0; j < seeds_size; j++)
+                for (u32 j = 0; j < seeds_size; j++)
                 {
                     thisHashSeeds[j] |= (decompressedData[read_pos] << (8 * (3 - i)));
                     read_pos++;

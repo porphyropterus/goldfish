@@ -4,10 +4,12 @@ mod routes {
     pub mod og_wind;
 }
 
+mod ffi;
+
 #[tokio::main]
 async fn main() {
     // build our application with a single route
-    let app = Router::new().route("/", get(routes::og_wind::find_og_wind));
+    let app = Router::new().route("/", get(routes::og_wind::find_og_wind_route));
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();

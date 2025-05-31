@@ -551,6 +551,7 @@ dependencies = [
  "axum",
  "cxx",
  "cxx-build",
+ "serde",
  "tokio",
 ]
 
