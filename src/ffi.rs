@@ -15,7 +15,7 @@ mod ffi {
     }
 
     unsafe extern "C++" {
-        include!("../core/src/finders/finder_bridge.h");
+        include!("finder_bridge.h");
 
         fn find_og_wind(input: &OgWindFinderInputFFI) -> Vec<OgWindFinderOutputFFI>;
     }

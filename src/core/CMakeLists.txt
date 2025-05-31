@@ -8,19 +8,19 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Add the executable
 add_executable(generator 
-    src/generators/main.cpp 
-    src/generators/AbstractPrecomputeGenerator.cpp
-    src/lib/RP/RPUtlRandom.cpp 
-    src/lib/RP/RPGolConfig.cpp 
-    src/lib/RP/RPGolWindSet.cpp
+    generators/main.cpp 
+    generators/AbstractPrecomputeGenerator.cpp
+    lib/RP/RPUtlRandom.cpp 
+    lib/RP/RPGolConfig.cpp 
+    lib/RP/RPGolWindSet.cpp
 )
 
 add_executable(finder
-    src/finders/main.cpp
-    src/WindArgParser.cpp
-    src/lib/RP/RPUtlRandom.cpp 
-    src/lib/RP/RPGolConfig.cpp 
-    src/lib/RP/RPGolWindSet.cpp
+    finders/main.cpp
+    WindArgParser.cpp
+    lib/RP/RPUtlRandom.cpp 
+    lib/RP/RPGolConfig.cpp 
+    lib/RP/RPGolWindSet.cpp
 )
 
 # Include debug symbols
@@ -28,8 +28,8 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O3")
 
 # Include directories (if any)
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR}/src/lib)
+include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/lib)
 
 # Find and link zlib
 find_package(ZLIB REQUIRED)
