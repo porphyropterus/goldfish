@@ -32,7 +32,8 @@ cargo run
 ### Production
 
 ```sh
-sudo docker run -p 3000:[PORT] -e OG_WIND_PRECOMPUTE_FILE=/path/to/og_wind_precompute.bin
+sudo docker build -t goldfish .
+sudo docker run -p [PORT]:3000 -e OG_WIND_PRECOMPUTE_FILE=/path/to/og_wind_precompute.bin
 ```
 
 ## Structure of the project

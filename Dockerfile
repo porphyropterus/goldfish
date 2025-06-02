@@ -1,5 +1,4 @@
-# Use the official Rust image with build tools and C++ toolchain
-FROM rust:1.76 as builder
+FROM rust:slim as builder
 
 RUN apt-get update && apt-get install -y \
     cmake \
@@ -8,7 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY . .
+COPY server/. .
 
 RUN cargo build --release
 
@@ -18,7 +17,7 @@ RUN apt-get update && apt-get install -y zlib1g && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY --from=builder /app/server/target/release/server /app/server
+COPY --from=builder /app/target/release/server /app/server
 
 EXPOSE 3000
 
