@@ -9,6 +9,8 @@
 
 #include "server/src/ffi.rs.h"
 
+#include "rust/cxx.h"
+
 // struct WindFFI
 // {
 //     u32 mDirection;
@@ -28,4 +30,4 @@
 
 RPGolWindSet inputFFIToWindSet(const OgWindFinderInputFFI &input);
 OgWindFinderOutputFFI windSetToOutputFFI(const RPGolWindSet &windSet);
-const std::vector<OgWindFinderOutputFFI> &find_og_wind(const OgWindFinderInputFFI &input);
+rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input);

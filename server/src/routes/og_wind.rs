@@ -1,10 +1,18 @@
-use axum::{response::IntoResponse, Json};
+use axum::{extract::Json, response::IntoResponse};
+use serde::Deserialize;
 
 use crate::ffi::{
     find_og_wind, output_to_serializable, OgWindFinderInputFFI, OgWindFinderOutput, WindFFI,
 };
 
-pub async fn find_og_wind_route() -> impl IntoResponse {
+#[derive(Deserialize)]
+pub struct Payload {
+    pub a: u32,
+}
+
+pub async fn find_og_wind_route(Json(payload): Json<Payload>) -> impl IntoResponse {
+    println!("{}", payload.a);
+
     let input = OgWindFinderInputFFI {
         winds: [
             WindFFI {
@@ -20,8 +28,8 @@ pub async fn find_og_wind_route() -> impl IntoResponse {
                 mSpeed: 2,
             },
             WindFFI {
-                mDirection: 9,
-                mSpeed: 17,
+                mDirection: 3,
+                mSpeed: 3,
             },
             WindFFI {
                 mDirection: 9,
@@ -46,9 +54,9 @@ pub async fn find_og_wind_route() -> impl IntoResponse {
         ],
     };
 
-    let result = find_og_wind(&input);
+    let output = find_og_wind(&input);
 
-    let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&result);
+    let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&output);
 
     Json(serializable_result)
 }

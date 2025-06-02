@@ -19,13 +19,13 @@ mod ffi {
     unsafe extern "C++" {
         include!("server/src/core/finders/finder_bridge.h");
 
-        fn find_og_wind(input: &OgWindFinderInputFFI) -> &CxxVector<OgWindFinderOutputFFI>;
+        fn find_og_wind(input: &OgWindFinderInputFFI) -> Vec<OgWindFinderOutputFFI>;
     }
 }
 
 pub use ffi::*;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct OgWindFinderOutput {
@@ -33,7 +33,7 @@ pub struct OgWindFinderOutput {
     pub winds: Vec<Wind>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Wind {
     pub direction: u32,
     pub speed: i32,
@@ -57,12 +57,6 @@ impl From<crate::ffi::OgWindFinderOutputFFI> for OgWindFinderOutput {
     }
 }
 
-pub fn output_to_serializable(
-    cxx_vec: &cxx::CxxVector<ffi::OgWindFinderOutputFFI>,
-) -> Vec<OgWindFinderOutput> {
-    cxx_vec
-        .iter()
-        .cloned()
-        .map(OgWindFinderOutput::from)
-        .collect()
+pub fn output_to_serializable(vec: &Vec<OgWindFinderOutputFFI>) -> Vec<OgWindFinderOutput> {
+    vec.iter().cloned().map(OgWindFinderOutput::from).collect()
 }

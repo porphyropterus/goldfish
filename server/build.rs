@@ -6,6 +6,7 @@ fn main() {
         .file("src/core/lib/RP/RPGolWindSet.cpp")
         .file("src/core/util_zlib.cpp")
         .flag_if_supported("-std=c++17")
+        .flag_if_supported("-O3")
         .include("src/core/finders")
         .include("src/core")
         .compile("finder_bridge");
