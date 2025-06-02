@@ -1,6 +1,6 @@
 #[cxx::bridge]
 mod ffi {
-    #[derive(Clone)]
+    #[derive(Clone, Copy)]
     struct WindFFI {
         mDirection: u32,
         mSpeed: i32,
