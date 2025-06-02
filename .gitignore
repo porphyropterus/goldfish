@@ -394,3 +394,5 @@ cmake_install.cmake
 # Before adding new lines, see the comment at the top.
 
 .vscode/
+
+server/src/core/build
