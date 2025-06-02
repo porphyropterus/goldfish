@@ -26,7 +26,16 @@ OgWindFinderOutputFFI windSetToOutputFFI(const RPGolWindSet &windSet)
 
 rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input)
 {
-    OgWindFinder finder("/home/vince/og_wind_precompute.bin");
+
+    const char *env = std::getenv("OG_WIND_PRECOMPUTE_PATH");
+
+    const std::string filePath =
+        (env && env[0] != '\0')
+            ? std::string(env)
+            : "og_wind_precompute.bin";
+
+    OgWindFinder finder(filePath);
+
     RPGolWindSet windSet = inputFFIToWindSet(input);
 
     std::vector<OgWindFinderOutput> outputs = finder.find(windSet);

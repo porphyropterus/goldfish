@@ -13,6 +13,7 @@ add_executable(generator
     lib/RP/RPUtlRandom.cpp 
     lib/RP/RPGolConfig.cpp 
     lib/RP/RPGolWindSet.cpp
+    util_zlib.cpp
 )
 
 add_executable(finder
@@ -21,6 +22,7 @@ add_executable(finder
     lib/RP/RPUtlRandom.cpp 
     lib/RP/RPGolConfig.cpp 
     lib/RP/RPGolWindSet.cpp
+    util_zlib.cpp
 )
 
 # Include debug symbols
