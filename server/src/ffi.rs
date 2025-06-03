@@ -16,10 +16,18 @@ mod ffi {
         winds: [WindFFI; 9],
     }
 
+    struct OgWindFinderSettings {
+        last_known_seed: i64, // we need a representation for null (-1), so we need to use i64
+        num_to_check: u32,
+    }
+
     unsafe extern "C++" {
         include!("server/src/core/finders/finder_bridge.h");
 
-        fn find_og_wind(input: &OgWindFinderInputFFI) -> Vec<OgWindFinderOutputFFI>;
+        fn find_og_wind(
+            input: &OgWindFinderInputFFI,
+            settings: &OgWindFinderSettings,
+        ) -> Vec<OgWindFinderOutputFFI>;
     }
 }
 

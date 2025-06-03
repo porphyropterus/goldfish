@@ -30,4 +30,4 @@
 
 RPGolWindSet inputFFIToWindSet(const OgWindFinderInputFFI &input);
 OgWindFinderOutputFFI windSetToOutputFFI(const RPGolWindSet &windSet);
-rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input);
+rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input, const OgWindFinderSettings &settings);

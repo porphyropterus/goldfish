@@ -69,6 +69,13 @@ fn validate_payload(payload: &Payload) -> Result<(), String> {
     Ok(())
 }
 
+fn payload_to_settings(payload: &Payload) -> crate::ffi::OgWindFinderSettings {
+    crate::ffi::OgWindFinderSettings {
+        last_known_seed: payload.last_known_seed.map_or(-1, |s| s as i64),
+        num_to_check: 1000,
+    }
+}
+
 fn payload_to_ffi(payload: &Payload) -> OgWindFinderInputFFI {
     let mut winds = [WindFFI {
         mDirection: 0,
@@ -101,8 +108,9 @@ pub async fn find_og_wind_route(Json(payload): Json<Payload>) -> impl IntoRespon
     }
 
     let input = payload_to_ffi(&payload);
+    let settings = payload_to_settings(&payload);
 
-    let output = find_og_wind(&input);
+    let output = find_og_wind(&input, &settings);
 
     let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&output);
 

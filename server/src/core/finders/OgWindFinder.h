@@ -37,4 +37,11 @@ public:
     {
         return output.windSet == input;
     }
+
+    virtual u32 nextSeed(u32 currentSeed) override
+    {
+        RPUtlRandom::initialize(currentSeed);
+        RPUtlRandom::advance(1);
+        return RPUtlRandom::getSeed();
+    }
 };

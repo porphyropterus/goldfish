@@ -105,11 +105,26 @@ public:
         return seeds;
     }
 
-    std::vector<TOutput> find(const TInput &input)
+    std::vector<TOutput> find(const TInput &input, s64 last_known_seed = -1, u32 num_to_check = 0)
     {
         std::vector<u32> hashes = inputToHashes(input);
 
-        std::vector<u32> seeds = getSeedsFromFile(filePath, hashes);
+        std::vector<u32> seeds;
+
+        if (last_known_seed != -1)
+        {
+            seeds = std::vector<u32>(num_to_check);
+            u32 seed = last_known_seed;
+            for (u32 i = 0; i < num_to_check; ++i)
+            {
+                seed = this->nextSeed(seed);
+                seeds[i] = seed;
+            }
+        }
+        else
+        {
+            seeds = getSeedsFromFile(filePath, hashes);
+        }
 
         std::vector<TOutput> results;
 
@@ -128,6 +143,8 @@ public:
     virtual std::vector<u32> inputToHashes(const TInput &input) = 0;
     virtual TOutput generatePotentialOutputFromSeed(u32 seed) = 0;
     virtual bool doesPotentialOutputMatchInput(const TOutput &output, const TInput &input) = 0;
+
+    virtual u32 nextSeed(u32 currentSeed) = 0;
 
 protected:
     u32 numHashes;
