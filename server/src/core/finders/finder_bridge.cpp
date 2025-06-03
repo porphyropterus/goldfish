@@ -32,7 +32,7 @@ rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input)
     const std::string filePath =
         (env && env[0] != '\0')
             ? std::string(env)
-            : "og_wind_precompute.bin";
+            : "/og_wind_precompute.bin";
 
     OgWindFinder finder(filePath);
 
