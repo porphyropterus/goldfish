@@ -34,7 +34,7 @@ cargo run
 ```sh
 sudo docker build -t goldfish .
 sudo docker run -p [PORT]:3000 -v /path/to/og_wind_precompute.bin:/og_wind_precompute.bin goldfish
-
+```
 ## Structure of the project
 
 -   [server](server/): Rust code that implements the REST API using [axum](https://github.com/tokio-rs/axum). Interfaces with the `core` module using [cxx](https://github.com/dtolnay/cxx).
@@ -47,4 +47,4 @@ sudo docker run -p [PORT]:3000 -v /path/to/og_wind_precompute.bin:/og_wind_preco
 -   [kiwi515](https://github.com/kiwi515/)
     -   for [GolfAtHome](https://github.com/kiwi515/GolfAtHome)
     -   for an initial attempt at a web-based wind bruteforcer that I took some ideas from
-```
+
