@@ -8,6 +8,7 @@ axum = "0.8.4"
 tokio = { version = "1.45.1", features = ["rt-multi-thread"] }
 cxx = "1.0"
 serde = { version = "1.0.219", features = ["derive"] }
+tower-http = { version = "0.6.5", features = ["cors"] }
 
 [build-dependencies]
 cxx-build = "1.0"
