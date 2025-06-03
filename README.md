@@ -25,7 +25,7 @@ cmake --build build
 
 ```sh
 cd server
-export OG_WIND_PRECOMPUTE_FILE=/path/to/og_wind_precompute.bin
+export OG_WIND_PRECOMPUTE_PATH=/path/to/og_wind_precompute.bin
 cargo run
 ```
 
