@@ -11,7 +11,7 @@
 /// </summary>
 /// <param name="max">Upper limit of sequence</param>
 /// <param name="pArray">Pointer to array to fill</param>
-void RPGolConfig::MakeRandomSequence(s32 max, s32 *pArray)
+void RPGolConfig::MakeRandomSequence(s32 max, s32 *pArray, bool ver_1_0)
 {
     for (s32 i = 0; i < max; i++)
         pArray[i] = -max;
@@ -19,7 +19,7 @@ void RPGolConfig::MakeRandomSequence(s32 max, s32 *pArray)
     s32 slotsFilled = 0;
     while (true)
     {
-        s32 random = (s32)(RPUtlRandom::getF32() * (max - slotsFilled));
+        s32 random = (s32)(RPUtlRandom::getF32(ver_1_0) * (max - slotsFilled));
 
         if (max > 0)
         {
@@ -47,7 +47,7 @@ void RPGolConfig::MakeRandomSequence(s32 max, s32 *pArray)
 /// to represent the "wind set" for the current game.
 /// (This uses the original algorithm from Wii Sports.)
 /// </summary>
-void RPGolConfig::MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out)
+void RPGolConfig::MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out, bool ver_1_0)
 {
     // Simulate all random number generations before wind is generated
     RPUtlRandom::advance(CALC_BEFORE_WIND);
@@ -56,8 +56,8 @@ void RPGolConfig::MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out)
     // (speed/dir, values this function will hand-pick from)
     s32 randomDirs[RPGolDefine::MAX_WIND_DIR];
     s32 randomSpeeds[RPGolDefine::MAX_WIND_SPD];
-    MakeRandomSequence(RPGolDefine::MAX_WIND_DIR, randomDirs);
-    MakeRandomSequence(RPGolDefine::MAX_WIND_SPD, randomSpeeds);
+    MakeRandomSequence(RPGolDefine::MAX_WIND_DIR, randomDirs, ver_1_0);
+    MakeRandomSequence(RPGolDefine::MAX_WIND_SPD, randomSpeeds, ver_1_0);
 
     // Round length (in holes)
     u32 numHoles = diff.endHole - diff.startHole;

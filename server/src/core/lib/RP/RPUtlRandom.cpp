@@ -44,16 +44,31 @@ void RPUtlRandom::advance(u32 n)
 /// <returns>Random u32</returns>
 u32 RPUtlRandom::getU32()
 {
-    return calc() >> 16;
+    return calc();
 }
 
 /// <summary>
 /// Get random float value
 /// </summary>
 /// <returns>Random f32</returns>
-f32 RPUtlRandom::getF32()
+
+f32 RPUtlRandom::getF32(bool ver_1_0)
 {
-    return (float)getU32() / 0x10000;
+    u32 seed = getU32();
+
+    // in 1.0, the bottom 16 bits of the seed are used
+    // in 1.1/1.2, the top 16 bits are used
+    if (!ver_1_0)
+    {
+        seed >>= 16;
+    }
+
+    // Limited to u16 bounds
+    const u16 rnd = static_cast<u16>(0xFFFF & seed);
+    // Convert to float
+    const f32 rnd_f = static_cast<f32>(rnd);
+    // Convert to percentage
+    return rnd_f / static_cast<f32>(0xFFFF + 1);
 }
 
 /// <summary>

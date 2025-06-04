@@ -9,6 +9,8 @@
 
 #include "util_zlib.h"
 
+#include "lib/RP/RPUtlRandom.h"
+
 template <typename TInput, typename TOutput>
 class AbstractFinder
 {
@@ -107,22 +109,23 @@ public:
 
     std::vector<TOutput> find(const TInput &input, s64 last_known_seed = -1, u32 num_to_check = 0)
     {
-        std::vector<u32> hashes = inputToHashes(input);
-
         std::vector<u32> seeds;
 
+        // if there's a last known seed, generate the next `num_to_check` seeds
         if (last_known_seed != -1)
         {
             seeds = std::vector<u32>(num_to_check);
-            u32 seed = last_known_seed;
+            u32 seed = (u32)(last_known_seed);
             for (u32 i = 0; i < num_to_check; ++i)
             {
                 seed = this->nextSeed(seed);
                 seeds[i] = seed;
             }
         }
+        // if there's no last known seed, read the seeds from the precompute file
         else
         {
+            std::vector<u32> hashes = inputToHashes(input);
             seeds = getSeedsFromFile(filePath, hashes);
         }
 
@@ -131,6 +134,7 @@ public:
         for (u32 seed : seeds)
         {
             TOutput output = generatePotentialOutputFromSeed(seed);
+
             if (doesPotentialOutputMatchInput(output, input))
             {
                 results.push_back(output);

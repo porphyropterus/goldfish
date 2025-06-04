@@ -11,23 +11,6 @@
 
 #include "rust/cxx.h"
 
-// struct WindFFI
-// {
-//     u32 mDirection;
-//     s32 mSpeed;
-// }
-
-// struct OgWindFinderInputFFIAdd commentMore actions
-// {
-//     std::vector<Wind> winds;
-// };
-
-// struct OgWindFinderOutputFFI
-// {
-//     u32 seed;
-//     std::vector<Wind> winds;
-// };
-
 RPGolWindSet inputFFIToWindSet(const OgWindFinderInputFFI &input);
 OgWindFinderOutputFFI windSetToOutputFFI(const RPGolWindSet &windSet);
-rust::Vec<OgWindFinderOutputFFI> find_og_wind(const OgWindFinderInputFFI &input, const OgWindFinderSettings &settings);
+OgWindFinderOutputWithErrorFFI find_og_wind(const OgWindFinderInputFFI &input, const OgWindFinderSettings &settings);

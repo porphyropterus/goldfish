@@ -1,3 +1,5 @@
+#pragma once
+
 #include "types.h"
 
 struct OSCalendarTime;
@@ -5,20 +7,20 @@ struct OSCalendarTime;
 class RPUtlRandom
 {
 public:
-    static RPUtlRandom* GetInstance()
+    static RPUtlRandom *GetInstance()
     {
         static RPUtlRandom instance;
         return &instance;
     }
 
-    static void initialize(const OSCalendarTime&); // at 801bea28
+    static void initialize(const OSCalendarTime &); // at 801bea28
     static void initialize(u32);
 
     static u32 getSeed();
     static void advance(u32);
-    
+
     static u32 getU32();
-    static f32 getF32();
+    static f32 getF32(bool ver_1_0 = false);
 
 private:
     RPUtlRandom() : mSeed(0) {}

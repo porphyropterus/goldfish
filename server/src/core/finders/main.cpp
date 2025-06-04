@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    OgWindFinder finder(filePath);
+    OgWindFinder finder(filePath, false);
     auto results = finder.find(windSet);
 
     char buffer[1024] = {0};

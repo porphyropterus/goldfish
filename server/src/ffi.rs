@@ -16,7 +16,13 @@ mod ffi {
         winds: [WindFFI; 9],
     }
 
+    struct OgWindFinderOutputWithErrorFFI {
+        seeds: Vec<OgWindFinderOutputFFI>,
+        error: String,
+    }
+
     struct OgWindFinderSettings {
+        game: u8,
         last_known_seed: i64, // we need a representation for null (-1), so we need to use i64
         num_to_check: u32,
     }
@@ -27,7 +33,7 @@ mod ffi {
         fn find_og_wind(
             input: &OgWindFinderInputFFI,
             settings: &OgWindFinderSettings,
-        ) -> Vec<OgWindFinderOutputFFI>;
+        ) -> OgWindFinderOutputWithErrorFFI;
     }
 }
 

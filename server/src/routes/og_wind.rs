@@ -7,9 +7,12 @@ use crate::ffi::{
 
 #[derive(Deserialize)]
 pub struct Payload {
+    pub game: String,
     pub last_known_seed: Option<u32>,
     pub winds: Vec<Wind>,
 }
+
+const VALID_GAMES: &[&str] = &["og_1_0", "og_1_1", "wsr"];
 
 fn validate_payload(payload: &Payload) -> Result<(), String> {
     if payload.winds.len() > 9 {
@@ -66,11 +69,21 @@ fn validate_payload(payload: &Payload) -> Result<(), String> {
         }
     }
 
+    // make sure the game is valid
+    if !VALID_GAMES.contains(&payload.game.as_str()) {
+        return Err(format!("Invalid game: {}", payload.game));
+    }
+
     Ok(())
 }
 
 fn payload_to_settings(payload: &Payload) -> crate::ffi::OgWindFinderSettings {
     crate::ffi::OgWindFinderSettings {
+        // convert game to its index in the VALID_GAMES array
+        game: VALID_GAMES
+            .iter()
+            .position(|&g| g == payload.game)
+            .unwrap_or(0) as u8,
         last_known_seed: payload.last_known_seed.map_or(-1, |s| s as i64),
         num_to_check: 1000,
     }
@@ -112,7 +125,11 @@ pub async fn find_og_wind_route(Json(payload): Json<Payload>) -> impl IntoRespon
 
     let output = find_og_wind(&input, &settings);
 
-    let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&output);
+    if output.error.len() > 0 {
+        return (http::StatusCode::INTERNAL_SERVER_ERROR, output.error).into_response();
+    }
+
+    let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&output.seeds);
 
     return Json(serializable_result).into_response();
 }

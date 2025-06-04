@@ -15,8 +15,8 @@ struct OgWindFinderOutput
 class OgWindFinder : public AbstractFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
-    OgWindFinder(const std::string &filePath)
-        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath) {}
+    OgWindFinder(const std::string &filePath, bool ver_1_0)
+        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath), ver_1_0(ver_1_0) {}
 
     virtual ~OgWindFinder() = default;
 
@@ -29,7 +29,7 @@ public:
     {
         RPUtlRandom::initialize(seed);
         auto windSet = RPGolWindSet();
-        RPGolConfig::getInstance()->MakeWindSet(diff_Ninehole, windSet);
+        RPGolConfig::getInstance()->MakeWindSet(diff_Ninehole, windSet, ver_1_0);
         return {seed, windSet};
     }
 
@@ -44,4 +44,7 @@ public:
         RPUtlRandom::advance(1);
         return RPUtlRandom::getSeed();
     }
+
+private:
+    bool ver_1_0 = true;
 };
