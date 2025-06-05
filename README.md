@@ -48,7 +48,7 @@ cargo run
 
 ```sh
 sudo docker build -t goldfish .
-sudo docker run -p [PORT]:3000 -v /path/to/og_wind_precompute_1.0.bin:/og_wind_precompute_1.0.bin /path/to/og_wind_precompute.bin:/og_wind_precompute_1.1.bin goldfish
+sudo docker run -p [PORT]:3000 -v /path/to/og_wind_precompute_1.0.bin:/og_wind_precompute_1.0.bin -v /path/to/og_wind_precompute.bin:/og_wind_precompute_1.1.bin goldfish
 ```
 
 ## Structure of the project
