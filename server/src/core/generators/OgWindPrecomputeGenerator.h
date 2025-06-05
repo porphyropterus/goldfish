@@ -16,7 +16,7 @@ public:
     {
         auto windSet = RPGolWindSet();
         RPUtlRandom::initialize(seed);
-        RPGolConfig::getInstance()->MakeWindSet(diff_Ninehole, windSet);
+        RPGolConfig::getInstance()->MakeWindSet(diff_Ninehole, windSet, true);
         return windSet.hashesWithDepth(3)[0];
     }
 

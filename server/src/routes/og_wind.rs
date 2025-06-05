@@ -12,7 +12,7 @@ pub struct Payload {
     pub winds: Vec<Wind>,
 }
 
-const VALID_GAMES: &[&str] = &["og_1_0", "og_1_1", "wsr"];
+const VALID_GAMES: &[&str] = &["og_1.0", "og_1.1", "wsr"];
 
 fn validate_payload(payload: &Payload) -> Result<(), String> {
     if payload.winds.len() > 9 {
