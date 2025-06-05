@@ -15,6 +15,13 @@ pub struct Payload {
 const VALID_GAMES: &[&str] = &["og_1.0", "og_1.1", "wsr"];
 
 fn validate_payload(payload: &Payload) -> Result<(), String> {
+    // make sure the game is valid
+    if !VALID_GAMES.contains(&payload.game.as_str()) {
+        return Err(format!("Invalid game: {}", payload.game));
+    }
+
+    let ver_1_0 = payload.game == "og_1.0";
+
     if payload.winds.len() > 9 {
         return Err("Too many winds provided".to_string());
     }
@@ -35,7 +42,11 @@ fn validate_payload(payload: &Payload) -> Result<(), String> {
     // make sure we have enough information if last_known_seed is not provided
     if !payload.last_known_seed.is_some() {
         // make sure we would receive back at most ~10 results
-        let mut info_score = (2u64.pow(32)) as f64;
+        let mut info_score = if ver_1_0 {
+            2u64.pow(16) as f64
+        } else {
+            2u64.pow(32) as f64
+        };
 
         for wind in &payload.winds {
             if wind.direction != 9 {
@@ -67,11 +78,6 @@ fn validate_payload(payload: &Payload) -> Result<(), String> {
         if wildcard_count > 1 {
             return Err("Too many wildcards in the first 3 winds".to_string());
         }
-    }
-
-    // make sure the game is valid
-    if !VALID_GAMES.contains(&payload.game.as_str()) {
-        return Err(format!("Invalid game: {}", payload.game));
     }
 
     Ok(())

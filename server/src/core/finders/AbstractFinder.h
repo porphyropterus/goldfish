@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "types.h"
 
@@ -134,6 +135,11 @@ public:
         for (u32 seed : seeds)
         {
             TOutput output = generatePotentialOutputFromSeed(seed);
+
+            // // print output
+            // char buffer[1024] = {0};
+            // output.windSet.toString(buffer);
+            // std::cout << "Seed: 0x" << std::hex << output.seed << "\nWind: " << buffer << std::endl;
 
             if (doesPotentialOutputMatchInput(output, input))
             {

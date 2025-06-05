@@ -16,13 +16,13 @@ class OgWindFinder : public AbstractFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
     OgWindFinder(const std::string &filePath, bool ver_1_0)
-        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath), ver_1_0(ver_1_0) {}
+        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(ver_1_0 ? 1 << 7 : 1 << 21, filePath), ver_1_0(ver_1_0) {}
 
     virtual ~OgWindFinder() = default;
 
     virtual std::vector<u32> inputToHashes(const RPGolWindSet &input) override
     {
-        return input.hashesWithDepth(3);
+        return input.hashesWithDepth(ver_1_0 ? 1 : 3);
     }
 
     virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override

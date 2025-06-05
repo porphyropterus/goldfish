@@ -8,7 +8,7 @@
 class OgWindPrecomputeGenerator : public AbstractPrecomputeGenerator
 {
 public:
-    OgWindPrecomputeGenerator() : AbstractPrecomputeGenerator(1 << 21) {}
+    OgWindPrecomputeGenerator(bool ver_1_0) : AbstractPrecomputeGenerator(ver_1_0 ? 1 << 7 : 1 << 21) {}
 
     virtual ~OgWindPrecomputeGenerator() = default;
 
@@ -17,11 +17,14 @@ public:
         auto windSet = RPGolWindSet();
         RPUtlRandom::initialize(seed);
         RPGolConfig::getInstance()->MakeWindSet(diff_Ninehole, windSet, true);
-        return windSet.hashesWithDepth(3)[0];
+        return windSet.hashesWithDepth(ver_1_0 ? 1 : 3)[0];
     }
 
     virtual u32 nextSeed(u32 currentSeed) override
     {
         return currentSeed + 1;
     }
+
+private:
+    bool ver_1_0;
 };

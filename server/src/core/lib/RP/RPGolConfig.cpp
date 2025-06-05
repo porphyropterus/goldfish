@@ -116,7 +116,7 @@ void RPGolConfig::MakeWindSet(const RPGolDifficulty &diff, RPGolWindSet &out, bo
                 // Otherwise, we pick a random hole and override its speed with zero.
                 else
                 {
-                    u32 rndHole = (u32)(RPUtlRandom::getF32() * numHoles) + diff.startHole;
+                    u32 rndHole = (u32)(RPUtlRandom::getF32(ver_1_0) * numHoles) + diff.startHole;
                     out[rndHole].mSpeed = 0;
 
                     // Copy wind direction from hole whose speed was set to zero
