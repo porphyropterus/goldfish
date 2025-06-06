@@ -34,6 +34,10 @@ public:
             if ((mWinds[i].mDirection != rhs.mWinds[i].mDirection && mWinds[i].mDirection != RPGolDefine::WILDCARD_DIR && rhs.mWinds[i].mDirection != RPGolDefine::WILDCARD_DIR) ||
                 (mWinds[i].mSpeed != rhs.mWinds[i].mSpeed && mWinds[i].mSpeed != RPGolDefine::WILDCARD_SPD && rhs.mWinds[i].mSpeed != RPGolDefine::WILDCARD_SPD))
             {
+                // {
+                //     printf("Mismatch at index %u: Direction (%u vs %u), Speed (%d vs %d)\n",
+                //            i, mWinds[i].mDirection, rhs.mWinds[i].mDirection, mWinds[i].mSpeed, rhs.mWinds[i].mSpeed);
+                // }
                 return false;
             }
         }

@@ -4,39 +4,44 @@
 
 void Sp2GolConfig::MakeRandomSequence(Sp2Rand &rand, s32 arrSize, s32 max, s32 *pArray)
 {
-    // exact same as og, but the array size doesn't have to be the max value
-    for (s32 i = 0; i < arrSize; i++)
-        pArray[i] = -max;
+    s32 seq[22];
 
-    s32 slotsFilled = 0;
-    while (true)
+    for (s32 i = 0; i < max; i++)
     {
-        s32 random = (s32)(rand.getF32() * (max - slotsFilled));
+        seq[i] = -max;
+    }
 
-        if (max > 0)
+    for (s32 i = 0; i < max; i++)
+    {
+
+        s32 randomEmptySlot = (s32)(rand.getF32() * (max - i));
+
+        for (s32 j = 0; j < max; j++)
         {
-            for (s32 i = 0, j = 0; i < arrSize; i++)
+            if (seq[j] < 0)
             {
-                if ((pArray[j] < 0) && (--random < 0))
+                if (randomEmptySlot == 0)
                 {
-                    pArray[j] += max;
-                    pArray[slotsFilled++] += j;
-
-                    if (slotsFilled >= arrSize)
-                        return;
-
+                    seq[j] += max; // mark as selected
+                    seq[i] += j;
                     break;
                 }
-                else
-                    j++;
-
-                // for (int x = 0; x < arrSize; x++)
-                // {
-                //     std::cout << pArray[x] << " ";
-                // }
-                // std::cout << std::endl;
+                randomEmptySlot--;
             }
         }
+
+        // // print pArray
+        // std::cout << "seq: ";
+        // for (s32 k = 0; k < arrSize; k++)
+        // {
+        //     std::cout << seq[k] << " ";
+        // }
+        // std::cout << std::endl;
+    }
+
+    for (s32 i = 0; i < arrSize; i++)
+    {
+        pArray[i] = seq[i];
     }
 }
 

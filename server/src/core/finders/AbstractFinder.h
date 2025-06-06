@@ -38,6 +38,7 @@ public:
 
         for (const auto &hash : hashes)
         {
+
             if (hash >= numHashes)
             {
                 throw std::out_of_range("Hash " + std::to_string(hash) + " is out of range for this generator that expects " + std::to_string(numHashes) + " hashes.");
@@ -50,17 +51,25 @@ public:
             u64 offset;
             file.read(reinterpret_cast<char *>(&offset), sizeof(u64));
 
+            // std::cout << offset << std::endl;
+
             // read the next offset to determine the size of the compressed data
             u64 next_offset;
             file.read(reinterpret_cast<char *>(&next_offset), sizeof(u64));
 
+            // std::cout << next_offset << std::endl;
+
             u64 difference = next_offset - offset;
+
+            // std::cout << difference << std::endl;
 
             // if there's no seeds for this hash, continue
             if (difference < sizeof(u64))
             {
                 continue;
             }
+
+            // std::cout << hash << std::endl;
 
             u64 size = difference - sizeof(u64);
 
@@ -94,6 +103,12 @@ public:
                     thisHashSeeds[j] |= (decompressedData[read_pos] << (8 * (3 - i)));
                     read_pos++;
                 }
+            }
+
+            // print thisHashSeeds
+            for (u32 seed : thisHashSeeds)
+            {
+                std::cout << "Seed: 0x" << std::hex << seed << std::endl;
             }
 
             // un-delta encode the seeds
@@ -133,6 +148,8 @@ public:
         std::vector<TOutput> results;
 
         // std::cout << seeds.size() << std::endl;
+        for (u32 seed : seeds)
+            std::cout << "Seed: 0x" << std::hex << seed << std::endl;
 
         for (u32 seed : seeds)
         {
