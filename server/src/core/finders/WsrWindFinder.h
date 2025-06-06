@@ -1,0 +1,50 @@
+#include "AbstractFinder.h"
+
+#include "lib/RP/RPGolWindSet.h"
+#include "lib/RP/RPGolDefine.h"
+#include "lib/RP/RPGolDifficulty.h"
+
+#include "lib/Sp2/Sp2Rand.h"
+#include "lib/Sp2/Sp2GolConfig.h"
+
+struct WsrWindFinderOutput
+{
+    u32 seed;
+    RPGolWindSet windSet;
+};
+
+class WsrWindFinder : public AbstractFinder<RPGolWindSet, WsrWindFinderOutput>
+{
+public:
+    WsrWindFinder(const std::string &filePath)
+        : AbstractFinder<RPGolWindSet, WsrWindFinderOutput>(1 << 21, filePath) {}
+
+    virtual ~WsrWindFinder() = default;
+
+    virtual std::vector<u32> inputToHashes(const RPGolWindSet &input) override
+    {
+        return input.hashesWithDepth(3);
+    }
+
+    virtual WsrWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override
+    {
+        rand.initialize(seed);
+        auto windSet = RPGolWindSet(21);
+        Sp2GolConfig::getInstance()->MakeWindSet(rand, diff_Sp2_18Hole, windSet);
+        return {seed, windSet};
+    }
+
+    virtual bool doesPotentialOutputMatchInput(const WsrWindFinderOutput &output, const RPGolWindSet &input) override
+    {
+        return output.windSet == input;
+    }
+
+    virtual u32 nextSeed(u32 currentSeed) override
+    {
+        rand.initialize(currentSeed);
+        return rand.Rand();
+    }
+
+private:
+    Sp2Rand rand;
+};

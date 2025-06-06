@@ -10,9 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(generator 
     generators/main.cpp 
     generators/AbstractPrecomputeGenerator.cpp
-    lib/RP/RPUtlRandom.cpp 
-    lib/RP/RPGolConfig.cpp 
     lib/RP/RPGolWindSet.cpp
+    lib/Sp2/Sp2GolConfig.cpp
     util_zlib.cpp
 )
 
@@ -22,6 +21,7 @@ add_executable(finder
     lib/RP/RPUtlRandom.cpp 
     lib/RP/RPGolConfig.cpp 
     lib/RP/RPGolWindSet.cpp
+    lib/Sp2/Sp2GolConfig.cpp
     util_zlib.cpp
 )
 

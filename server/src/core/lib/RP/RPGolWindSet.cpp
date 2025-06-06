@@ -118,7 +118,7 @@ void RPGolWindSet::toString(char *out, const char *setStartDelim, const char *se
     std::strcat(buf, setStartDelim);
 
     // Convert each speed + direction to string (keep wildcard if that was part of the input)
-    for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
+    for (u32 i = 0; i < this->mSize; i++)
     {
         // Term start delim
         std::strcat(buf, termStartDelim);
@@ -129,7 +129,7 @@ void RPGolWindSet::toString(char *out, const char *setStartDelim, const char *se
         std::strcat(buf, windbuf);
 
         // Term end delim (except last item)
-        if (i < RPGolDefine::HOLE_SIZE - 1 || bCloseEndDelim)
+        if (i < this->mSize - 1 || bCloseEndDelim)
             std::strcat(buf, termEndDelim);
     }
 

@@ -132,6 +132,8 @@ public:
 
         std::vector<TOutput> results;
 
+        // std::cout << seeds.size() << std::endl;
+
         for (u32 seed : seeds)
         {
             TOutput output = generatePotentialOutputFromSeed(seed);

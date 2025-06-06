@@ -20,11 +20,14 @@ struct Wind
 class RPGolWindSet
 {
 public:
-    RPGolWindSet() : mWinds() {}
+    size_t mSize;
+    std::vector<Wind> mWinds;
+
+    RPGolWindSet(size_t size = RPGolDefine::HOLE_SIZE) : mSize(size), mWinds(size) {}
 
     bool operator==(const RPGolWindSet &rhs) const
     {
-        for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
+        for (u32 i = 0; i < this->mSize; i++)
         {
             // if any direction or speed is not equal, return false
             // if either are wildcard, they count as matching
@@ -42,8 +45,6 @@ public:
     Score_t scoreAgainst(const RPGolWindSet &) const;
     void toString(char *buf, const char *setStartDelim = "{", const char *setEndDelim = "}",
                   const char *termStartDelim = "", const char *termEndDelim = ", ", bool bCloseEndDelim = false) const;
-
-    Wind mWinds[RPGolDefine::HOLE_SIZE];
 
 private:
     static constexpr Score_t scoreBase = 8;

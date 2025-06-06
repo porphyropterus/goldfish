@@ -19,7 +19,7 @@ bool WindArgParser::parseTargetWindSet(const std::string &arg, RPGolWindSet &out
     u32 numWinds = 0;
 
     std::string wind;
-    while (numWinds < RPGolDefine::HOLE_SIZE && pos < arg.length())
+    while (numWinds < out.mSize && pos < arg.length())
     {
         // Get substring of i'th wind
         commaPos = arg.find(",", pos);
@@ -80,7 +80,7 @@ bool WindArgParser::parseTargetWindSet(const std::string &arg, RPGolWindSet &out
         numWinds++;
     }
 
-    while (numWinds < RPGolDefine::HOLE_SIZE)
+    while (numWinds < out.mSize)
     {
         out.mWinds[numWinds].mSpeed = RPGolDefine::WILDCARD_SPD;
         out.mWinds[numWinds].mDirection = RPGolDefine::WILDCARD_DIR;

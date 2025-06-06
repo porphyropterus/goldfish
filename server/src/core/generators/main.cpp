@@ -1,9 +1,9 @@
-#include "OgWindPrecomputeGenerator.h"
+#include "WsrWindPrecomputeGenerator.h"
 
 int main()
 {
-    OgWindPrecomputeGenerator generator;
-    generator.generateFile("./og_wind_precompute.bin");
+    WsrWindPrecomputeGenerator generator;
+    generator.generateFile("./wsr_wind_precompute.bin");
 
     return 0;
 }

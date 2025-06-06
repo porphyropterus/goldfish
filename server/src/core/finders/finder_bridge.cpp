@@ -4,7 +4,7 @@
 RPGolWindSet inputFFIToWindSet(const OgWindFinderInputFFI &input)
 {
     RPGolWindSet windSet;
-    for (size_t i = 0; i < RPGolDefine::HOLE_SIZE; i++)
+    for (size_t i = 0; i < windSet.mSize; i++)
     {
         windSet.mWinds[i].mDirection = input.winds[i].mDirection;
         windSet.mWinds[i].mSpeed = input.winds[i].mSpeed;
@@ -16,7 +16,7 @@ OgWindFinderOutputFFI windSetToOutputFFI(const RPGolWindSet &windSet)
 {
     OgWindFinderOutputFFI output;
 
-    for (u32 i = 0; i < RPGolDefine::HOLE_SIZE; i++)
+    for (u32 i = 0; i < windSet.mSize; i++)
     {
         output.winds[i].mDirection = windSet.mWinds[i].mDirection;
         output.winds[i].mSpeed = windSet.mWinds[i].mSpeed;

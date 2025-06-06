@@ -105,8 +105,9 @@ namespace RPGolDefine
 
         if (dir >= MAX_WIND_DIR)
         {
-            assert(false && "Invalid wind direction!");
-            return "INVALID";
+            // assert(false && "Invalid wind direction!");
+            // return "INVALID";
+            return "*";
         }
 
         constexpr const char *windDirStrings[] = {

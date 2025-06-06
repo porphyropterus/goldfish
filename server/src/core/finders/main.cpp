@@ -1,4 +1,4 @@
-#include "OgWindFinder.h"
+#include "WsrWindFinder.h"
 #include "WindArgParser.h"
 #include <iostream>
 
@@ -13,14 +13,14 @@ int main(int argc, char *argv[])
     std::string filePath = argv[1];
     std::string windStr = argv[2];
 
-    RPGolWindSet windSet;
+    RPGolWindSet windSet(21);
     if (!WindArgParser::parseTargetWindSet(windStr, windSet))
     {
         std::cerr << "Error: Invalid wind argument" << std::endl;
         return 1;
     }
 
-    OgWindFinder finder(filePath, false);
+    WsrWindFinder finder(filePath);
     auto results = finder.find(windSet);
 
     char buffer[1024] = {0};
