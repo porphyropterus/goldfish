@@ -105,12 +105,6 @@ public:
                 }
             }
 
-            // print thisHashSeeds
-            for (u32 seed : thisHashSeeds)
-            {
-                std::cout << "Seed: 0x" << std::hex << seed << std::endl;
-            }
-
             // un-delta encode the seeds
             for (u32 i = 1; i < thisHashSeeds.size(); i++)
             {
@@ -148,8 +142,8 @@ public:
         std::vector<TOutput> results;
 
         // std::cout << seeds.size() << std::endl;
-        for (u32 seed : seeds)
-            std::cout << "Seed: 0x" << std::hex << seed << std::endl;
+        // for (u32 seed : seeds)
+        //     std::cout << "Seed: 0x" << std::hex << seed << std::endl;
 
         for (u32 seed : seeds)
         {
