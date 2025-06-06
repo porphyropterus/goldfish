@@ -29,14 +29,6 @@ void Sp2GolConfig::MakeRandomSequence(Sp2Rand &rand, s32 arrSize, s32 max, s32 *
                 randomEmptySlot--;
             }
         }
-
-        // // print pArray
-        // std::cout << "seq: ";
-        // for (s32 k = 0; k < arrSize; k++)
-        // {
-        //     std::cout << seq[k] << " ";
-        // }
-        // std::cout << std::endl;
     }
 
     for (s32 i = 0; i < arrSize; i++)
