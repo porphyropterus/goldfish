@@ -57,46 +57,46 @@ fn validate_payload(payload: &Payload) -> Result<(), String> {
         return Err("num_to_check can only be provided with last_known_seed".to_string());
     }
 
-    // // make sure we have enough information if last_known_seed is not provided
-    // if !payload.last_known_seed.is_some() {
-    //     // make sure we would receive back at most ~10 results
-    //     let mut info_score = if ver_1_0 {
-    //         2u64.pow(16) as f64
-    //     } else {
-    //         2u64.pow(32) as f64
-    //     };
+    // make sure we have enough information if last_known_seed is not provided
+    if !payload.last_known_seed.is_some() {
+        // make sure we would receive back at most ~10 results
+        let mut info_score = if ver_1_0 {
+            2u64.pow(16) as f64
+        } else {
+            2u64.pow(32) as f64
+        };
 
-    //     for wind in &payload.winds {
-    //         if wind.direction != 9 {
-    //             info_score /= 8.0;
-    //         }
+        for wind in &payload.winds {
+            if wind.direction != 9 {
+                info_score /= 8.0;
+            }
 
-    //         if wind.speed != 17 {
-    //             info_score /= 16.0;
-    //         }
-    //     }
+            if wind.speed != 17 {
+                info_score /= 16.0;
+            }
+        }
 
-    //     if info_score > 5.0 {
-    //         return Err("Not enough information provided".to_string());
-    //     }
+        if info_score > 5.0 {
+            return Err("Not enough information provided".to_string());
+        }
 
-    //     // now make sure there is only one wildcard in the first 3
+        // now make sure there is only one wildcard in the first 3
 
-    //     let mut wildcard_count = 0;
-    //     for wind in payload.winds.iter().take(3) {
-    //         if wind.direction == 9 {
-    //             wildcard_count += 1;
-    //         }
+        let mut wildcard_count = 0;
+        for wind in payload.winds.iter().take(3) {
+            if wind.direction == 9 {
+                wildcard_count += 1;
+            }
 
-    //         if wind.speed == 17 {
-    //             wildcard_count += 1;
-    //         }
-    //     }
+            if wind.speed == 17 {
+                wildcard_count += 1;
+            }
+        }
 
-    //     if wildcard_count > 1 {
-    //         return Err("Too many wildcards in the first 3 winds".to_string());
-    //     }
-    // }
+        if wildcard_count > 1 {
+            return Err("Too many wildcards in the first 3 winds".to_string());
+        }
+    }
 
     Ok(())
 }
