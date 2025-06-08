@@ -22,6 +22,10 @@ https://github.com/vncz14/goldfish-demo
 
 `og_wind_precompute.bin` (8.2 GB): https://app.drime.cloud/drive/s/Ymin69vHRnQxMpyt9fHOgCRTYradFX
 
+#### Wii Sports Resort
+
+`wsr_wind_precompute.bin` (7.4 GB): https://app.drime.cloud/drive/s/gq1Bt63vWOcanP8HmGPjHSYcYF7VTr
+
 ### Generation
 
 The code for generating the precompute files are also available in this repository under [`server/src/core/generators`](server/src/core/generators).
@@ -41,6 +45,7 @@ cmake --build build
 cd server
 export OG_WIND_PRECOMPUTE_PATH_1_0=/path/to/og_wind_precompute_1.0.bin
 export OG_WIND_PRECOMPUTE_PATH_1_1=/path/to/og_wind_precompute.bin
+export WSR_WIND_PRECOMPUTE_PATH=/path/to/wsr_wind_precompute.bin
 cargo run
 ```
 
@@ -48,7 +53,12 @@ cargo run
 
 ```sh
 sudo docker build -t goldfish .
-sudo docker run -p [PORT]:3000 -v /path/to/og_wind_precompute_1.0.bin:/og_wind_precompute_1.0.bin -v /path/to/og_wind_precompute.bin:/og_wind_precompute_1.1.bin goldfish
+sudo docker run \
+    -p [PORT]:3000 \
+    -v /path/to/og_wind_precompute_1.0.bin:/og_wind_precompute_1.0.bin \
+    -v /path/to/og_wind_precompute.bin:/og_wind_precompute_1.1.bin \
+    -v /path/to/wsr_wind_precompute.bin:/wsr_wind_precompute.bin \
+    goldfish
 ```
 
 ## Structure of the project
