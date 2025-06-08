@@ -7,17 +7,13 @@
 #include "lib/Sp2/Sp2Rand.h"
 #include "lib/Sp2/Sp2GolConfig.h"
 
-struct WsrWindFinderOutput
-{
-    u32 seed;
-    RPGolWindSet windSet;
-};
+#include "OgWindFinder.h"
 
-class WsrWindFinder : public AbstractFinder<RPGolWindSet, WsrWindFinderOutput>
+class WsrWindFinder : public AbstractFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
     WsrWindFinder(const std::string &filePath)
-        : AbstractFinder<RPGolWindSet, WsrWindFinderOutput>(1 << 21, filePath) {}
+        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath) {}
 
     virtual ~WsrWindFinder() = default;
 
@@ -26,7 +22,7 @@ public:
         return input.hashesWithDepth(3);
     }
 
-    virtual WsrWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override
+    virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override
     {
         rand.initialize(seed);
         auto windSet = RPGolWindSet(21);
@@ -34,7 +30,7 @@ public:
         return {seed, windSet};
     }
 
-    virtual bool doesPotentialOutputMatchInput(const WsrWindFinderOutput &output, const RPGolWindSet &input) override
+    virtual bool doesPotentialOutputMatchInput(const OgWindFinderOutput &output, const RPGolWindSet &input) override
     {
         return output.windSet == input;
     }

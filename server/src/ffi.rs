@@ -7,13 +7,13 @@ mod ffi {
     }
 
     struct OgWindFinderInputFFI {
-        winds: [WindFFI; 9],
+        winds: [WindFFI; 21],
     }
 
     #[derive(Clone)]
     struct OgWindFinderOutputFFI {
         seed: u32,
-        winds: [WindFFI; 9],
+        winds: [WindFFI; 21],
     }
 
     struct OgWindFinderOutputWithErrorFFI {

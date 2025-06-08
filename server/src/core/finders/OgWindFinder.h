@@ -1,3 +1,5 @@
+#pragma once
+
 #include "AbstractFinder.h"
 
 #include "lib/RP/RPGolWindSet.h"

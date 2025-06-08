@@ -4,6 +4,7 @@
 #include "lib/RP/RPGolWindSet.h"
 
 #include "OgWindFinder.h"
+#include "WsrWindFinder.h"
 
 #include "types.h"
 

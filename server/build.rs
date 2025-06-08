@@ -4,6 +4,7 @@ fn main() {
         .file("src/core/lib/RP/RPGolConfig.cpp")
         .file("src/core/lib/RP/RPUtlRandom.cpp")
         .file("src/core/lib/RP/RPGolWindSet.cpp")
+        .file("src/core/lib/Sp2/Sp2GolConfig.cpp")
         .file("src/core/util_zlib.cpp")
         .flag_if_supported("-std=c++17")
         .flag_if_supported("-O3")
