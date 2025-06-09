@@ -109,7 +109,7 @@ fn payload_to_settings(payload: &Payload) -> crate::ffi::OgWindFinderSettings {
             .position(|&g| g == payload.game)
             .unwrap_or(0) as u8,
         last_known_seed: payload.last_known_seed.map_or(-1, |s| s as i64),
-        num_to_check: 1000,
+        num_to_check: payload.num_to_check.map_or(0, |u| u as u32),
     }
 }
 
