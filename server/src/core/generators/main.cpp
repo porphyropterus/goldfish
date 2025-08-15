@@ -1,9 +1,9 @@
-#include "WsrWindPrecomputeGenerator.h"
+#include "OgBlinkPrecomputeGenerator.h"
 
 int main()
 {
-    WsrWindPrecomputeGenerator generator;
-    generator.generateFile("./wsr_wind_precompute.bin");
+    OgBlinkPrecomputeGenerator generator(true);
+    generator.generateFile("./og_blink_precompute.bin");
 
     return 0;
 }

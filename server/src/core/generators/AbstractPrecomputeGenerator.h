@@ -34,5 +34,6 @@ public:
     void generateTempFiles();
     void fillTempFiles();
     void generateFinalFileFromTempFiles(const std::string &finalFilePath);
+
     void generateFile(const std::string &filePath);
 };

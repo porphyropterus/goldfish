@@ -12,6 +12,7 @@ add_executable(generator
     generators/AbstractPrecomputeGenerator.cpp
     lib/RP/RPGolWindSet.cpp
     lib/Sp2/Sp2GolConfig.cpp
+    lib/RP/RPUtlRandom.cpp
     util_zlib.cpp
 )
 
