@@ -2,7 +2,7 @@
 
 int main()
 {
-    OgBlinkPrecomputeGenerator generator(true);
+    OgBlinkPrecomputeGenerator generator;
     generator.generateFile("./og_blink_precompute.bin");
 
     return 0;

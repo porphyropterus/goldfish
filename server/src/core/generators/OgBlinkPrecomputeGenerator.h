@@ -8,12 +8,9 @@
 class OgBlinkPrecomputeGenerator : public AbstractPrecomputeGenerator
 {
 public:
-    OgBlinkPrecomputeGenerator(bool ver_1_0) : AbstractPrecomputeGenerator(0)
+    OgBlinkPrecomputeGenerator() : AbstractPrecomputeGenerator(0)
     {
-        this->ver_1_0 = ver_1_0;
-
-        this->numBlinksPerHash = ver_1_0 ? 2 : 6;
-        this->numTempFiles = static_cast<u32>(std::pow(RPKokeshiBlinkMgr::NUM_UNIQUE_BLINK_TIMES, numBlinksPerHash));
+        this->numTempFiles = static_cast<u32>(std::pow(RPKokeshiBlinkMgr::NUM_UNIQUE_BLINK_TIMES, NUM_BLINKS_PER_HASH));
     }
 
     virtual ~OgBlinkPrecomputeGenerator() = default;
@@ -24,7 +21,7 @@ public:
 
         u32 hash = 0;
 
-        for (u32 i = 0; i < numBlinksPerHash; i++)
+        for (u32 i = 0; i < NUM_BLINKS_PER_HASH; i++)
         {
             u32 idx = RPKokeshiBlinkMgr::getRandomBlinkIndex();
 
@@ -36,7 +33,5 @@ public:
     }
 
 private:
-    bool ver_1_0;
-
-    u32 numBlinksPerHash;
+    static constexpr u32 NUM_BLINKS_PER_HASH = 6;
 };
