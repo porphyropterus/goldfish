@@ -38,6 +38,16 @@ void RPUtlRandom::advance(u32 n)
         calc();
 }
 
+void RPUtlRandom::unadvance(u32 n)
+{
+    RPUtlRandom *rng = GetInstance();
+
+    for (u32 i = 0; i < n; ++i)
+    {
+        rng->mSeed = (rng->mSeed - 1) * SEED_STEP_INV;
+    }
+}
+
 /// <summary>
 /// Get random u32 value
 /// </summary>

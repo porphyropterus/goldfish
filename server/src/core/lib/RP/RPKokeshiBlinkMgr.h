@@ -1,3 +1,5 @@
+#pragma once
+
 #include "lib/RP/RPUtlRandom.h"
 
 #include <stdexcept>
