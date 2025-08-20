@@ -18,7 +18,8 @@ public:
     BlinkGroup(u32 seed, u32 depth)
     {
         RPUtlRandom::initialize(seed);
-        RPUtlRandom::unadvance(depth);
+
+        RPUtlRandom::unadvance(depth + 1); // +1 = account for last blink that we don't see the wait time of
 
         for (u32 i = 0; i < depth; i++)
         {
@@ -27,7 +28,7 @@ public:
         }
     }
 
-    static constexpr u32 NUM_BLINKS_PER_HASH = 6;
+    static constexpr u32 NUM_BLINKS_PER_HASH = 7;
 
     u32 toHash() const
     {
