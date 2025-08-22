@@ -17,7 +17,7 @@ class OgBlinkFinder : public AbstractFinder<BlinkGroup, OgBlinkFinderOutput>
 {
 public:
     OgBlinkFinder(const std::string &filePath)
-        : AbstractFinder<BlinkGroup, OgBlinkFinderOutput>(static_cast<u32>(std::pow(RPKokeshiBlinkMgr::NUM_UNIQUE_BLINK_TIMES, 6)), filePath) {}
+        : AbstractFinder<BlinkGroup, OgBlinkFinderOutput>(static_cast<u32>(std::pow(RPKokeshiBlinkMgr::NUM_UNIQUE_BLINK_TIMES, BlinkGroup::NUM_BLINKS_PER_HASH)), filePath) {}
 
     virtual ~OgBlinkFinder() = default;
 
@@ -29,11 +29,6 @@ public:
     virtual OgBlinkFinderOutput generatePotentialOutputFromSeed(u32 seed) override
     {
         return OgBlinkFinderOutput{seed};
-    }
-
-    virtual bool doesPotentialOutputMatchInput(const OgBlinkFinderOutput &output, const BlinkGroup &input) override
-    {
-        return input == BlinkGroup(output.seed, input.size());
     }
 
     virtual u32 nextSeed(u32 currentSeed) override

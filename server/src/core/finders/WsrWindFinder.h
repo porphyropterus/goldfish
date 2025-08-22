@@ -1,4 +1,4 @@
-#include "AbstractFinder.h"
+#include "ExactMatchFinder.h"
 
 #include "lib/RP/RPGolWindSet.h"
 #include "lib/RP/RPGolDefine.h"
@@ -9,11 +9,11 @@
 
 #include "OgWindFinder.h"
 
-class WsrWindFinder : public AbstractFinder<RPGolWindSet, OgWindFinderOutput>
+class WsrWindFinder : public ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
     WsrWindFinder(const std::string &filePath)
-        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath) {}
+        : ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>(1 << 21, filePath) {}
 
     virtual ~WsrWindFinder() = default;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractFinder.h"
+#include "ExactMatchFinder.h"
 
 #include "lib/RP/RPGolWindSet.h"
 #include "lib/RP/RPGolDefine.h"
@@ -14,11 +14,11 @@ struct OgWindFinderOutput
     RPGolWindSet windSet;
 };
 
-class OgWindFinder : public AbstractFinder<RPGolWindSet, OgWindFinderOutput>
+class OgWindFinder : public ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
     OgWindFinder(const std::string &filePath, bool ver_1_0)
-        : AbstractFinder<RPGolWindSet, OgWindFinderOutput>(ver_1_0 ? 1 << 7 : 1 << 21, filePath), ver_1_0(ver_1_0) {}
+        : ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>(filePath, ver_1_0 ? 1 << 7 : 1 << 21) {}
 
     virtual ~OgWindFinder() = default;
 

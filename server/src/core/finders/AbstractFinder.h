@@ -139,33 +139,19 @@ public:
             seeds = getSeedsFromFile(filePath, hashes);
         }
 
-        std::vector<TOutput> results;
+        std::vector<TOutput> results = getResults(seeds);
 
         // std::cout << seeds.size() << std::endl;
         // for (u32 seed : seeds)
         //     std::cout << "Seed: 0x" << std::hex << seed << std::endl;
-
-        for (u32 seed : seeds)
-        {
-            TOutput output = generatePotentialOutputFromSeed(seed);
-
-            // // print output
-            // char buffer[1024] = {0};
-            // output.windSet.toString(buffer);
-            // std::cout << "Seed: 0x" << std::hex << output.seed << "\nWind: " << buffer << std::endl;
-
-            if (doesPotentialOutputMatchInput(output, input))
-            {
-                results.push_back(output);
-            }
-        }
 
         return results;
     }
 
     virtual std::vector<u32> inputToHashes(const TInput &input) = 0;
     virtual TOutput generatePotentialOutputFromSeed(u32 seed) = 0;
-    virtual bool doesPotentialOutputMatchInput(const TOutput &output, const TInput &input) = 0;
+
+    virtual std::vector<TOutput> getResults(const std::vector<u32> &seeds) = 0;
 
     virtual u32 nextSeed(u32 currentSeed) = 0;
 
