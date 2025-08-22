@@ -1,10 +1,11 @@
 #include <string>
+#include <algorithm>
 
 #include "AbstractFinder.h"
 
 #include "types.h"
 
-template <typename TInput, typename TOutput>
+template <typename TOutput>
 struct ScoredOutput
 {
     double score;
@@ -16,17 +17,16 @@ class TopNFinder : public AbstractFinder<TInput, ScoredOutput<TOutput>>
 {
 public:
     TopNFinder(u32 numHashes, const std::string &filePath, const u32 n)
-        : AbstractFinder(numHashes, filePath), n(n) {}
+        : AbstractFinder<TInput, ScoredOutput<TOutput>>(numHashes, filePath), n(n) {}
 
-    std::vector<ScoredOutput<TInput, TOutput>> getResults(const std::vector<u32> &seeds, const TInput &input)
+    std::vector<ScoredOutput<TOutput>> getResults(const std::vector<u32> &seeds, const TInput &input)
     {
-        std::vector<ScoredOutput<TInput, TOutput>> scored;
+        std::vector<ScoredOutput<TOutput>> scored;
 
         for (u32 seed : seeds)
         {
-            TOutput output = this->generatePotentialOutputFromSeed(seed);
-            double score = scoreOutput(output, input);
-            scored.push_back({score, output});
+            ScoredOutput<TOutput> output = this->generatePotentialOutputFromSeed(seed, input);
+            scored.push_back(output);
         }
 
         if (scored.size() > n)
@@ -40,8 +40,7 @@ public:
         return scored;
     }
 
-    virtual double
-    scoreOutput(const TOutput &output, const TInput &input) = 0;
+    virtual double scoreOutput(const TOutput &output, const TInput &input) = 0;
 
 private:
     u32 n;

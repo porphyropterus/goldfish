@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
         for (const auto &result : results)
         {
-            std::cout << "Seed: 0x" << std::hex << result.seed << std::endl;
+            std::cout << "Seed: 0x" << std::hex << result.output.seed << " : " << result.score << std::endl;
         }
 
         break;

@@ -139,7 +139,7 @@ public:
             seeds = getSeedsFromFile(filePath, hashes);
         }
 
-        std::vector<TOutput> results = getResults(seeds);
+        std::vector<TOutput> results = getResults(seeds, input);
 
         // std::cout << seeds.size() << std::endl;
         // for (u32 seed : seeds)
@@ -149,9 +149,9 @@ public:
     }
 
     virtual std::vector<u32> inputToHashes(const TInput &input) = 0;
-    virtual TOutput generatePotentialOutputFromSeed(u32 seed) = 0;
+    virtual TOutput generatePotentialOutputFromSeed(u32 seed, const TInput &input) = 0;
 
-    virtual std::vector<TOutput> getResults(const std::vector<u32> &seeds) = 0;
+    virtual std::vector<TOutput> getResults(const std::vector<u32> &seeds, const TInput &input) = 0;
 
     virtual u32 nextSeed(u32 currentSeed) = 0;
 

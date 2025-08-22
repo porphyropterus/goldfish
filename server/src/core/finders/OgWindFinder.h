@@ -18,7 +18,7 @@ class OgWindFinder : public ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>
 {
 public:
     OgWindFinder(const std::string &filePath, bool ver_1_0)
-        : ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>(filePath, ver_1_0 ? 1 << 7 : 1 << 21) {}
+        : ExactMatchFinder<RPGolWindSet, OgWindFinderOutput>(ver_1_0 ? 1 << 7 : 1 << 21, filePath) {}
 
     virtual ~OgWindFinder() = default;
 
@@ -27,7 +27,7 @@ public:
         return input.hashesWithDepth(ver_1_0 ? 1 : 3);
     }
 
-    virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override
+    virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed, const RPGolWindSet &input) override
     {
         RPUtlRandom::initialize(seed);
         auto windSet = RPGolWindSet();

@@ -22,7 +22,7 @@ public:
         return input.hashesWithDepth(3);
     }
 
-    virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed) override
+    virtual OgWindFinderOutput generatePotentialOutputFromSeed(u32 seed, const RPGolWindSet &input) override
     {
         rand.initialize(seed);
         auto windSet = RPGolWindSet(21);

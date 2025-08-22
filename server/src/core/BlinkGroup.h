@@ -59,6 +59,19 @@ public:
         return blinkTimes.size();
     }
 
+    static u32 compare(const BlinkGroup &a, const BlinkGroup &b)
+    {
+        u32 sum = 0;
+        for (size_t i = 0; i < std::min(a.size(), b.size()); i++)
+        {
+            if (a.blinkTimes[i] != b.blinkTimes[i])
+            {
+                sum += std::abs(static_cast<s32>(a.blinkTimes[i]) - static_cast<s32>(b.blinkTimes[i]));
+            }
+        }
+        return sum;
+    }
+
 private:
     std::vector<u32> blinkTimes;
 };
