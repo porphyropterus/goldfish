@@ -15,6 +15,8 @@ public:
 
     BlinkGroup(const std::vector<u32> &blinkTimes) : blinkTimes(blinkTimes) {}
 
+    std::vector<u32> blinkTimes;
+
     BlinkGroup(u32 seed, u32 depth)
     {
         RPUtlRandom::initialize(seed);
@@ -71,7 +73,4 @@ public:
         }
         return sum;
     }
-
-private:
-    std::vector<u32> blinkTimes;
 };

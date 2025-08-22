@@ -1,6 +1,7 @@
 use axum::{routing::post, Router};
 use tower_http::cors::{Any, CorsLayer};
 mod routes {
+    pub mod blink;
     pub mod wind2seed;
 }
 
@@ -17,6 +18,10 @@ async fn main() {
     // build our application with a single route
     let app = Router::new()
         .route("/wind2seed", post(routes::wind2seed::find_og_wind_route))
+        .route(
+            "/blink2seed",
+            post(routes::blink::find_seed_from_blink_route),
+        )
         .layer(cors);
 
     // run our app with hyper, listening globally on port 3000

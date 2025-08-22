@@ -27,6 +27,32 @@ mod ffi {
         num_to_check: u32,
     }
 
+    struct OgBlinkFinderInputFFI {
+        blinks: Vec<u32>,
+    }
+
+    #[derive(Clone)]
+    struct OgBlinkFinderOutputFFI {
+        seed: u32,
+        blinks: Vec<u32>,
+    }
+
+    #[derive(Clone)]
+    struct ScoredOgBlinkFinderOutputFFI {
+        score: u32,
+        output: OgBlinkFinderOutputFFI,
+    }
+
+    struct ScoredOgBlinkFinderOutputWithErrorFFI {
+        outputs: Vec<ScoredOgBlinkFinderOutputFFI>,
+        error: String,
+    }
+
+    struct OgBlinkFinderSettings {
+        last_known_seed: i64, // we need a representation for null (-1), so we need to use i64
+        num_to_check: u32,
+    }
+
     unsafe extern "C++" {
         include!("server/src/core/finders/finder_bridge.h");
 
@@ -34,6 +60,11 @@ mod ffi {
             input: &OgWindFinderInputFFI,
             settings: &OgWindFinderSettings,
         ) -> OgWindFinderOutputWithErrorFFI;
+
+        fn find_og_blink(
+            input: &OgBlinkFinderInputFFI,
+            settings: &OgBlinkFinderSettings,
+        ) -> ScoredOgBlinkFinderOutputWithErrorFFI;
     }
 }
 
@@ -51,6 +82,18 @@ pub struct OgWindFinderOutput {
 pub struct Wind {
     pub direction: u32,
     pub speed: i32,
+}
+
+#[derive(Serialize)]
+pub struct OgBlinkFinderOutput {
+    pub seed: u32,
+    pub blinks: Vec<u32>,
+}
+
+#[derive(Serialize)]
+pub struct ScoredOgBlinkFinderOutput {
+    pub score: u32,
+    pub output: OgBlinkFinderOutput,
 }
 
 impl From<crate::ffi::WindFFI> for Wind {
@@ -71,6 +114,27 @@ impl From<crate::ffi::OgWindFinderOutputFFI> for OgWindFinderOutput {
     }
 }
 
-pub fn output_to_serializable(vec: &Vec<OgWindFinderOutputFFI>) -> Vec<OgWindFinderOutput> {
+impl From<crate::ffi::ScoredOgBlinkFinderOutputFFI> for ScoredOgBlinkFinderOutput {
+    fn from(o: crate::ffi::ScoredOgBlinkFinderOutputFFI) -> Self {
+        ScoredOgBlinkFinderOutput {
+            score: o.score,
+            output: OgBlinkFinderOutput {
+                seed: o.output.seed,
+                blinks: o.output.blinks.clone(),
+            },
+        }
+    }
+}
+
+pub fn wind_output_to_serializable(vec: &Vec<OgWindFinderOutputFFI>) -> Vec<OgWindFinderOutput> {
     vec.iter().cloned().map(OgWindFinderOutput::from).collect()
+}
+
+pub fn blink_output_to_serializable(
+    vec: &Vec<ScoredOgBlinkFinderOutputFFI>,
+) -> Vec<ScoredOgBlinkFinderOutput> {
+    vec.iter()
+        .cloned()
+        .map(ScoredOgBlinkFinderOutput::from)
+        .collect()
 }

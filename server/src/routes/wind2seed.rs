@@ -2,7 +2,7 @@ use axum::{extract::Json, http, response::IntoResponse};
 use serde::Deserialize;
 
 use crate::ffi::{
-    find_og_wind, output_to_serializable, OgWindFinderInputFFI, OgWindFinderOutput, Wind, WindFFI,
+    find_og_wind, wind_output_to_serializable, OgWindFinderInputFFI, OgWindFinderOutput, Wind, WindFFI,
 };
 
 #[derive(Deserialize)]
@@ -153,7 +153,7 @@ pub async fn find_og_wind_route(Json(payload): Json<Payload>) -> impl IntoRespon
         return (http::StatusCode::INTERNAL_SERVER_ERROR, output.error).into_response();
     }
 
-    let serializable_result: Vec<OgWindFinderOutput> = output_to_serializable(&output.seeds);
+    let serializable_result: Vec<OgWindFinderOutput> = wind_output_to_serializable(&output.seeds);
 
     return Json(serializable_result).into_response();
 }

@@ -103,3 +103,54 @@ OgWindFinderOutputWithErrorFFI find_og_wind(const OgWindFinderInputFFI &input, c
     }
     return finalOutput;
 }
+
+BlinkGroup inputFFIToBlinkGroup(const OgBlinkFinderInputFFI &input)
+{
+    return BlinkGroup(std::vector<u32>(input.blinks.begin(), input.blinks.end()));
+}
+
+ScoredOgBlinkFinderOutputFFI blinkOutputToOutputFFI(const ScoredOutput<OgBlinkFinderOutput> &output)
+{
+    ScoredOgBlinkFinderOutputFFI outputFFI;
+    outputFFI.score = output.score;
+    outputFFI.output.seed = output.output.seed;
+
+    for (u32 blink : output.output.blinkGroup.blinkTimes)
+    {
+        outputFFI.output.blinks.push_back(blink);
+    }
+
+    return outputFFI;
+}
+
+ScoredOgBlinkFinderOutputWithErrorFFI find_og_blink(const OgBlinkFinderInputFFI &input, const OgBlinkFinderSettings &settings)
+{
+    ScoredOgBlinkFinderOutputWithErrorFFI finalOutput;
+
+    try
+    {
+        const char *precomputeEnvVarName = "OG_BLINK_PRECOMPUTE_PATH";
+        const char *env = std::getenv(precomputeEnvVarName);
+        const std::string filePath =
+            (env && env[0] != '\0')
+                ? std::string(env)
+                : "/og_blink_precompute.bin";
+
+        OgBlinkFinder finder(filePath);
+        BlinkGroup blinkGroup = inputFFIToBlinkGroup(input);
+
+        auto outputs = finder.find(blinkGroup, settings.last_known_seed, settings.num_to_check);
+
+        for (const auto &output : outputs)
+        {
+            finalOutput.outputs.push_back(blinkOutputToOutputFFI(output));
+        }
+    }
+    catch (const std::exception &e)
+    {
+        // finalOutput.error = rust::String("An error occured");
+        finalOutput.error = rust::String(e.what());
+    }
+
+    return finalOutput;
+}
